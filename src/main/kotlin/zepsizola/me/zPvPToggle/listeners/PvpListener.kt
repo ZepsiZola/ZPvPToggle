@@ -14,11 +14,6 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
         if (event.entityType != EntityType.PLAYER) return
         val victim = event.entity as Player
 
-        // Check if the victim has PvP disabled
-        if (!plugin.pvpManager.isPvpEnabled(victim)) {
-            event.isCancelled = true
-            return
-        }
 
         // Determine the attacker
         val damager = event.damager
@@ -31,9 +26,29 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
             else -> null
         }
 
+        // Check if the victim has PvP disabled
+        if (!plugin.pvpManager.isPvpEnabled(victim)) {
+            event.isCancelled = true
+            // Notify the attacker if they exist
+            if (attacker != null) {
+                val message = plugin.messageManager.getMessage(
+                    "attack_pvp_disabled", 
+                    mapOf("%player%" to victim.name)
+                )
+                attacker.sendMessage(message)
+            }
+            return
+        }
+
         // If attacker exists and has PvP disabled, cancel the event
         if (attacker != null && !plugin.pvpManager.isPvpEnabled(attacker)) {
             event.isCancelled = true
+            // Notify the attacker that they need to enable PvP
+            val message = plugin.messageManager.getMessage(
+                "attack_pvp_disabled", 
+                mapOf("%player%" to victim.name)
+            )
+            attacker.sendMessage(message)
         }
     }
 }

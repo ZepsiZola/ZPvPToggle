@@ -21,8 +21,10 @@ class ZPvPToggle : JavaPlugin() {
         messageManager = MessageManager(this)
         pvpManager = PvpManager(this)
 
-        // Register command executor
-        getCommand("pvp")?.setExecutor(PvpCommand(this))
+        // Register command executor and tab completer
+        val pvpCommand = PvpCommand(this)
+        getCommand("pvp")?.setExecutor(pvpCommand)
+        getCommand("pvp")?.tabCompleter = pvpCommand
 
         // Register event listeners
         server.pluginManager.registerEvents(PvpListener(this), this)

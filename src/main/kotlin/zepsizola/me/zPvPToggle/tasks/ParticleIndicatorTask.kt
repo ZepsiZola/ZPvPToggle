@@ -18,30 +18,58 @@ object ParticleIndicatorTask {
         // Cancel any existing task to prevent duplicates
         stop()
 
-        // Read interval from config.yml; default to 20 ticks (1 second)
-        val interval = plugin.config.getLong("particle-indicator.interval-ticks", 20L)
+        // Initialize the PvP enabled players cache in PvpManager
+        plugin.pvpManager.initializePvpEnabledCache()
+
+        // Read interval from config.yml; default to 5 ticks
+        val interval = plugin.config.getLong("particle-indicator.interval-ticks", 5L)
+        
+        // Get the max view distance from config
+        val maxDistance = plugin.config.getDouble("particle-indicator.max-view-distance", 64.0)
+        val unlimitedDistance = maxDistance <= 0
 
         // Schedule the global task to run at a fixed rate
         task = plugin.server.globalRegionScheduler.runAtFixedRate(
             plugin,
             Consumer { _: ScheduledTask ->
-                // Iterate over all online players with PvP enabled
-                for (player in plugin.server.onlinePlayers) {
-                    val state = plugin.pvpManager.getState(player)
-                    if (state.pvpEnabled) {
-                        // For each player with PvP enabled, show their indicator to all players who can see indicators
+                // Get all players with PvP enabled from the PvpManager
+                val pvpEnabledPlayers = plugin.pvpManager.getPvpEnabledPlayers()
+                
+                // Only process if there are players with PvP enabled
+                if (pvpEnabledPlayers.isNotEmpty()) {
+                    
+                    // For each player with PvP enabled
+                    for (pvpPlayer in pvpEnabledPlayers) {
+                        // Skip if player is no longer valid or online
+                        if (!pvpPlayer.isValid || !pvpPlayer.isOnline) {
+                            continue
+                        }
+                        
+                        // Get the world of the PvP-enabled player
+                        val world = pvpPlayer.world
+                        
+                        // For each observer who can see indicators
                         for (observer in plugin.server.onlinePlayers) {
-                            // Only show indicators to players who have indicators enabled
-                            if (plugin.pvpManager.canSeeIndicators(observer)) {
-                                // Schedule an immediate task for the observer to see the ring
-                                observer.scheduler.run(
-                                    plugin,
-                                    Consumer { _: ScheduledTask ->
-                                        showRedRing(player, observer, plugin)
-                                    },
-                                    null
-                                )
+                            // Skip if observer can't see indicators
+                            if (!plugin.pvpManager.getState(observer).canSeeIndicators) continue
+                            
+                            // Skip if they're in different worlds
+                            if (observer.world != world) continue
+                            
+                            // Check distance if distance limit is enabled
+                            if (!unlimitedDistance && observer != pvpPlayer) {
+                                val distance = observer.location.distance(pvpPlayer.location)
+                                if (distance > maxDistance) continue
                             }
+                            
+                            // Schedule an immediate task for the observer to see the ring
+                            observer.scheduler.run(
+                                plugin,
+                                Consumer { _: ScheduledTask ->
+                                    showParticleRing(pvpPlayer, observer, plugin)
+                                },
+                                null
+                            )
                         }
                     }
                 }
@@ -56,15 +84,13 @@ object ParticleIndicatorTask {
         task = null
     }
 
-    private fun showRedRing(player: Player, observer: Player, plugin: ZPvPToggle) {
-        // Allow players to see their own indicators
-        
+    private fun showParticleRing(player: Player, observer: Player, plugin: ZPvPToggle) {
         val section = plugin.config.getConfigurationSection("particle-indicator") ?: return
 
         // Safely get config values, fallback to defaults
         val typeName = section.getString("type", "REDSTONE")?.uppercase() ?: "REDSTONE"
         val radius = section.getDouble("radius", 0.7)
-        val points = section.getInt("points", 12)
+        val points = section.getInt("points", 32)
         val yOffset = section.getDouble("y-offset", 0.1)
 
         val location = player.location

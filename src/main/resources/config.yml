@@ -11,13 +11,17 @@ particle-indicator:
   color: RED
 
   # The size (thickness) of the dust for REDSTONE particles.
-  dust-size: 0.4
+  dust-size: 1.0
 
   # Number of points around the ring (higher = smoother circle).
   points: 32
 
   # Radius of the particle ring.
-  radius: 1.0
+  radius: 0.8
 
   # Y-offset above the player's feet.
   y-offset: 0.1
+  
+  # Maximum distance (in blocks) at which players can see PvP indicators.
+  # Set to -1 for unlimited distance.
+  max-view-distance: 64

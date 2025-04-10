@@ -1,12 +1,23 @@
-pvp_disabled: "<yellow>Your PvP is now <red>Disabled<yellow>."
-pvp_enabled: "<yellow>Your PvP is now <green>Enabled<yellow>."
-pvp_disabled_other: "<yellow>PvP is now <red>Disabled<yellow> for <white>%player%<yellow>."
-pvp_enabled_other: "<yellow>PvP is now <green>Enabled<yellow> for <white>%player%<yellow>."
-hide_indicators: "<yellow>PvP indicators are now <red>Disabled<yellow> for you."
-show_indicators: "<yellow>PvP indicators are now <green>Enabled<yellow> for you."
+prefix: "<red>ZPvPToggle <dark_red>»</dark_red>"
+
+pvp_enabled: "%prefix% <white>PvP enabled."
+
+pvp_disabled: "%prefix% <white>PvP disabled."
+
+pvp_enabled_other: "%prefix% <white>PvP enabled for %player%."
+
+pvp_disabled_other: "%prefix% <white>PvP disabled for %player%."
+
+attack_pvp_disabled: "%prefix% <white>You cannot attack <red>%player%<white>. Both players must have PvP enabled."
+
+show_indicators: "%prefix% <white>PvP indicators now <red>shown<white> to you."
+
+hide_indicators: "%prefix% <white>PvP indicators now <red>hidden<white> from you."
+
 invalid_command: "<red>ERROR <dark_red>»</dark_red> <white>Do <red>/pvp help</red> <white>for a list of valid commands."
+
 help_message: |
-  <white>----------- <red>PvP Commands <white>-----------
+  <white>----------- <red>ZPvPToggle Commands <white>-----------
   <red>/pvp <gray>-</gray> <white>Toggle PvP status
   <red>/pvp toggle <gray>-</gray> <white>Toggle PvP status
   <red>/pvp on <gray>-</gray> <white>Enable PvP
@@ -15,11 +26,13 @@ help_message: |
   <red>/pvp show <gray>-</gray> <white>Show PvP particle indicators
   <red>/pvp help <gray>-</gray> <white>Display the help message
   <red>/pvp reload <gray>-</gray> <white>Reload plugin configuration (Admin)
-  <white>-----------------------------------
+  <white>-------------------------------------------
+
 arena_message: |
   <red>|
-  <red>|</red> <white>KeepInv is off except in designated PvP Warps.</white>
-  <red>|</red> <white>Go to [/warp pvp] and [/warp PvPComplex].</white>
-  <red>|</red> <white>Items stolen in PvP will not be returned by Staff.</white>
+  <red>| <white><red>KeepInv is off <white>except in designated <red>/pvp<white> Warps.</white>
+  <red>| <white>Go to [/warp pvp] and [/warp PvPComplex].</white>
+  <red>| <white>Items stolen in PvP will not be returned by Staff.</white>
   <red>|
-config_reloaded: "<yellow>ZPvPToggle configuration has been <green>reloaded<yellow>."
+
+config_reloaded: "%prefix% <white>Configuration reloaded."
