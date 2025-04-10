@@ -8,10 +8,15 @@ import java.io.File
 
 class MessageManager(private val plugin: ZPvPToggle) {
 
-    private val messageConfig: YamlConfiguration
+    private var messageConfig: YamlConfiguration
     private val miniMessage = MiniMessage.miniMessage()
 
     init {
+        val messagesFile = File(plugin.dataFolder, "messages.yml")
+        messageConfig = YamlConfiguration.loadConfiguration(messagesFile)
+    }
+    
+    fun reload() {
         val messagesFile = File(plugin.dataFolder, "messages.yml")
         messageConfig = YamlConfiguration.loadConfiguration(messagesFile)
     }

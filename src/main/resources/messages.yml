@@ -14,10 +14,12 @@ help_message: |
   <red>/pvp hide <gray>-</gray> <white>Hide PvP particle indicators
   <red>/pvp show <gray>-</gray> <white>Show PvP particle indicators
   <red>/pvp help <gray>-</gray> <white>Display the help message
+  <red>/pvp reload <gray>-</gray> <white>Reload plugin configuration (Admin)
   <white>-----------------------------------
 arena_message: |
   <red>|
-  <red>|</red> <white>KeepInv is off <gray>except in designated PvP Warps.</gray>
+  <red>|</red> <white>KeepInv is off except in designated PvP Warps.</white>
   <red>|</red> <white>Go to [/warp pvp] and [/warp PvPComplex].</white>
   <red>|</red> <white>Items stolen in PvP will not be returned by Staff.</white>
   <red>|
+config_reloaded: "<yellow>ZPvPToggle configuration has been <green>reloaded<yellow>."

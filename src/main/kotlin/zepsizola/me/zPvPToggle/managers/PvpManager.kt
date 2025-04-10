@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 data class PlayerState(
     var pvpEnabled: Boolean = false,
-    var indicatorsEnabled: Boolean = true,
+    var canSeeIndicators: Boolean = true,  // Whether this player can see indicators of other players
     var firstToggleOnThisSession: Boolean = true
 )
 
@@ -36,12 +36,12 @@ class PvpManager(private val plugin: ZPvPToggle) {
 
     fun toggleIndicators(player: Player): Boolean {
         val state = getState(player)
-        state.indicatorsEnabled = !state.indicatorsEnabled
-        return state.indicatorsEnabled
+        state.canSeeIndicators = !state.canSeeIndicators
+        return state.canSeeIndicators
     }
 
-    fun isIndicatorsEnabled(player: Player): Boolean {
-        return getState(player).indicatorsEnabled
+    fun canSeeIndicators(player: Player): Boolean {
+        return getState(player).canSeeIndicators
     }
 
     fun isFirstToggleOnThisSession(player: Player): Boolean {

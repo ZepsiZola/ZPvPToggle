@@ -75,8 +75,8 @@ class PvpCommand(private val plugin: ZPvPToggle) : CommandExecutor {
                     sender.sendMessage(Component.text("You lack permission (zpvptoggle.user)."))
                     return true
                 }
-                val result = pvpManager.toggleIndicators(sender)
-                if (result) {
+                val canSeeIndicators = pvpManager.toggleIndicators(sender)
+                if (canSeeIndicators) {
                     sender.sendMessage(msgManager.getMessage("show_indicators"))
                 } else {
                     sender.sendMessage(msgManager.getMessage("hide_indicators"))
@@ -92,12 +92,20 @@ class PvpCommand(private val plugin: ZPvPToggle) : CommandExecutor {
                     return true
                 }
                 val state = pvpManager.getState(sender)
-                if (!state.indicatorsEnabled) {
-                    state.indicatorsEnabled = true
+                if (!state.canSeeIndicators) {
+                    state.canSeeIndicators = true
                     sender.sendMessage(msgManager.getMessage("show_indicators"))
                 } else {
-                    sender.sendMessage(Component.text("Your indicators are already enabled."))
+                    sender.sendMessage(Component.text("You can already see PvP indicators."))
                 }
+            }
+            "reload" -> {
+                if (!sender.hasPermission("zpvptoggle.admin")) {
+                    sender.sendMessage(Component.text("You lack permission (zpvptoggle.admin)."))
+                    return true
+                }
+                plugin.reloadPlugin()
+                sender.sendMessage(msgManager.getMessage("config_reloaded"))
             }
             else -> {
                 // Admin usage? /pvp <player> <on|off>

@@ -39,4 +39,18 @@ class ZPvPToggle : JavaPlugin() {
 
         logger.info("ZPvPToggle has been disabled!")
     }
+    
+    fun reloadPlugin() {
+        // Reload config files
+        reloadConfig()
+        
+        // Reload messages
+        messageManager.reload()
+        
+        // Restart particle indicator task with new settings
+        ParticleIndicatorTask.stop()
+        ParticleIndicatorTask.start(this)
+        
+        logger.info("ZPvPToggle configuration has been reloaded!")
+    }
 }

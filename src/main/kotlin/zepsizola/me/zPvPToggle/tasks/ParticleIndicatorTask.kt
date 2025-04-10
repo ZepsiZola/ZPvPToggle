@@ -25,22 +25,28 @@ object ParticleIndicatorTask {
         task = plugin.server.globalRegionScheduler.runAtFixedRate(
             plugin,
             Consumer { _: ScheduledTask ->
-                // Iterate over all online players
+                // Iterate over all online players with PvP enabled
                 for (player in plugin.server.onlinePlayers) {
                     val state = plugin.pvpManager.getState(player)
-                    if (state.pvpEnabled && state.indicatorsEnabled) {
-                        // Schedule an immediate task for the player to show the ring
-                        player.scheduler.run(
-                            plugin,
-                            Consumer { _: ScheduledTask ->
-                                showRedRing(player, plugin)
-                            },
-                            null
-                        )
+                    if (state.pvpEnabled) {
+                        // For each player with PvP enabled, show their indicator to all players who can see indicators
+                        for (observer in plugin.server.onlinePlayers) {
+                            // Only show indicators to players who have indicators enabled
+                            if (plugin.pvpManager.canSeeIndicators(observer)) {
+                                // Schedule an immediate task for the observer to see the ring
+                                observer.scheduler.run(
+                                    plugin,
+                                    Consumer { _: ScheduledTask ->
+                                        showRedRing(player, observer, plugin)
+                                    },
+                                    null
+                                )
+                            }
+                        }
                     }
                 }
             },
-            0L,        // initial delay
+            1L,        // initial delay (must be > 0 for Folia)
             interval    // period
         )
     }
@@ -50,7 +56,9 @@ object ParticleIndicatorTask {
         task = null
     }
 
-    private fun showRedRing(player: Player, plugin: ZPvPToggle) {
+    private fun showRedRing(player: Player, observer: Player, plugin: ZPvPToggle) {
+        // Allow players to see their own indicators
+        
         val section = plugin.config.getConfigurationSection("particle-indicator") ?: return
 
         // Safely get config values, fallback to defaults
@@ -85,13 +93,13 @@ object ParticleIndicatorTask {
             val x = radius * cos(angle)
             val z = radius * sin(angle)
             val particleLoc = center.clone().add(x, 0.0, z)
-
+            
             if (dustOptions != null) {
-                // Redstone-based color
-                world.spawnParticle(particleType, particleLoc, 1, dustOptions)
+                // Redstone-based color - show only to the observer
+                observer.spawnParticle(particleType, particleLoc, 1, dustOptions)
             } else {
-                // Simple spawn for other particle types
-                world.spawnParticle(particleType, particleLoc, 1, 0.0, 0.0, 0.0, 0.0)
+                // Simple spawn for other particle types - show only to the observer
+                observer.spawnParticle(particleType, particleLoc, 1, 0.0, 0.0, 0.0, 0.0)
             }
         }
     }

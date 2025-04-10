@@ -1,6 +1,6 @@
 particle-indicator:
   # Interval in ticks to show the ring of particles. 20 ticks = 1 second.
-  interval-ticks: 20
+  interval-ticks: 5
 
   # Particle type for the indicator (e.g., REDSTONE, FLAME, etc.)
   # If you use REDSTONE, color and size settings will be applied.
@@ -11,13 +11,13 @@ particle-indicator:
   color: RED
 
   # The size (thickness) of the dust for REDSTONE particles.
-  dust-size: 1.0
+  dust-size: 0.4
 
   # Number of points around the ring (higher = smoother circle).
-  points: 12
+  points: 32
 
   # Radius of the particle ring.
-  radius: 0.7
+  radius: 1.0
 
   # Y-offset above the player's feet.
   y-offset: 0.1
