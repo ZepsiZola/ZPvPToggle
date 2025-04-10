@@ -1,0 +1,23 @@
+particle-indicator:
+  # Interval in ticks to show the ring of particles. 20 ticks = 1 second.
+  interval-ticks: 20
+
+  # Particle type for the indicator (e.g., REDSTONE, FLAME, etc.)
+  # If you use REDSTONE, color and size settings will be applied.
+  type: REDSTONE
+
+  # For REDSTONE particles, specify the color name.
+  # Use standard Bukkit color names (e.g., RED, BLUE, GREEN).
+  color: RED
+
+  # The size (thickness) of the dust for REDSTONE particles.
+  dust-size: 1.0
+
+  # Number of points around the ring (higher = smoother circle).
+  points: 12
+
+  # Radius of the particle ring.
+  radius: 0.7
+
+  # Y-offset above the player's feet.
+  y-offset: 0.1

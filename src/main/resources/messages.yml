@@ -1,0 +1,23 @@
+pvp_disabled: "<yellow>Your PvP is now <red>Disabled<yellow>."
+pvp_enabled: "<yellow>Your PvP is now <green>Enabled<yellow>."
+pvp_disabled_other: "<yellow>PvP is now <red>Disabled<yellow> for <white>%player%<yellow>."
+pvp_enabled_other: "<yellow>PvP is now <green>Enabled<yellow> for <white>%player%<yellow>."
+hide_indicators: "<yellow>PvP indicators are now <red>Disabled<yellow> for you."
+show_indicators: "<yellow>PvP indicators are now <green>Enabled<yellow> for you."
+invalid_command: "<red>ERROR <dark_red>»</dark_red> <white>Do <red>/pvp help</red> <white>for a list of valid commands."
+help_message: |
+  <white>----------- <red>PvP Commands <white>-----------
+  <red>/pvp <gray>-</gray> <white>Toggle PvP status
+  <red>/pvp toggle <gray>-</gray> <white>Toggle PvP status
+  <red>/pvp on <gray>-</gray> <white>Enable PvP
+  <red>/pvp off <gray>-</gray> <white>Disable PvP
+  <red>/pvp hide <gray>-</gray> <white>Hide PvP particle indicators
+  <red>/pvp show <gray>-</gray> <white>Show PvP particle indicators
+  <red>/pvp help <gray>-</gray> <white>Display the help message
+  <white>-----------------------------------
+arena_message: |
+  <red>|
+  <red>|</red> <white>KeepInv is off <gray>except in designated PvP Warps.</gray>
+  <red>|</red> <white>Go to [/warp pvp] and [/warp PvPComplex].</white>
+  <red>|</red> <white>Items stolen in PvP will not be returned by Staff.</white>
+  <red>|

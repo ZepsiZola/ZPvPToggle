@@ -1,0 +1,19 @@
+name: ZPvPToggle
+version: '${version}'
+main: zepsizola.me.zPvPToggle.ZPvPToggle
+api-version: '1.21'
+authors: [ 'Zepsi_Zola_' ]
+description: PvP-Toggle Plugin. Lets players toggle their PvP status.
+folia-supported: true
+commands:
+  pvp:
+    description: Toggle or manage PvP.
+    usage: "/pvp help"
+    permission: zpvptoggle.user
+permissions:
+  zpvptoggle.user:
+    description: Allows players to toggle their own PvP status.
+    default: true
+  zpvptoggle.admin:
+    description: Allows staff to toggle PvP status for other players.
+    default: op
