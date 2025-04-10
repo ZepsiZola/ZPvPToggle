@@ -44,7 +44,19 @@ class PvpManager(private val plugin: ZPvPToggle) {
     fun togglePvp(player: Player): Boolean {
         val state = getState(player)
         state.pvpEnabled = !state.pvpEnabled
-        
+
+        // Debug metadata - check for common vanish metadata keys
+        // if (plugin.config.getBoolean("debug", false)) {
+        //     plugin.logger.info("Checking metadata for player ${player.name}:")
+        //     val metadataKeys = listOf("vanished", "isVanished", "vanish", "isInvisible")
+        //     for (key in metadataKeys) {
+        //         if (player.hasMetadata(key)) {
+        //             val metadataValues = player.getMetadata(key)
+        //             plugin.logger.info("  $key: ${metadataValues.joinToString { it.value().toString() }}")
+        //         }
+        //     }
+        // }
+
         // Update the PvP enabled players cache
         updatePvpEnabledCache(player, state.pvpEnabled)
         

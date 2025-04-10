@@ -17,6 +17,7 @@ hide_indicators: "%prefix% <white>PvP indicators now <red>hidden<white> from you
 invalid_command: "<red>ERROR <dark_red>»</dark_red> <white>Do <red>/pvp help</red> <white>for a list of valid commands."
 
 help_message: |
+
   <white>----------- <red>ZPvPToggle Commands <white>-----------
   <red>/pvp <gray>-</gray> <white>Toggle PvP status
   <red>/pvp toggle <gray>-</gray> <white>Toggle PvP status
@@ -29,6 +30,7 @@ help_message: |
   <white>-------------------------------------------
 
 arena_message: |
+
   <red>|
   <red>| <white><red>KeepInv is off <white>except in designated <red>/pvp<white> Warps.</white>
   <red>| <white>Go to [/warp pvp] and [/warp PvPComplex].</white>

@@ -45,6 +45,36 @@ object ParticleIndicatorTask {
                             continue
                         }
                         
+                        // Skip if player is in spectator mode
+                        if (pvpPlayer.gameMode == org.bukkit.GameMode.SPECTATOR) {
+                            continue
+                        }
+                        
+                        // Check for vanish status using common metadata keys used by vanish plugins
+                        // Check various vanish metadata keys and their values
+                        val vanishKeys = listOf("vanished", "isVanished", "vanish")
+                        var isVanished = false
+                        for (key in vanishKeys) {
+                            if (pvpPlayer.hasMetadata(key)) {
+                                val metaValue = pvpPlayer.getMetadata(key).firstOrNull()?.asBoolean()
+                                if (metaValue == true) {
+                                    isVanished = true
+                                    break
+                                }
+                            }
+                        }
+                        if (isVanished) {
+                            continue
+                        }
+                        
+                        // // Skip if player has invisibility effect and has permission typically used by vanish plugins
+                        // if (pvpPlayer.isInvisible && 
+                        //     (pvpPlayer.hasPermission("vanish.use") || 
+                        //      pvpPlayer.hasPermission("essentials.vanish") || 
+                        //      pvpPlayer.hasPermission("v.vanish"))) {
+                        //     continue
+                        // }
+                        
                         // Get the world of the PvP-enabled player
                         val world = pvpPlayer.world
                         
