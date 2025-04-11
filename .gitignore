@@ -123,3 +123,4 @@ runs/
 
 # Stuff I added
 kls_database.db
+deploy.sh
