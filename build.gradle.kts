@@ -37,8 +37,9 @@ tasks {
     }
 
     shadowJar {
-        archiveClassifier.set("shaded")
-        archiveVersion.set("")
+        relocate("org.bstats", "me.zepsizola.zPvPToggle.bstats")
+        archiveVersion.set(project.version.toString())
+        archiveClassifier.set("")
         minimize()
     }
 
