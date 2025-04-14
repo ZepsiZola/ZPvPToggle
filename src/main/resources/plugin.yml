@@ -4,7 +4,9 @@ main: zepsizola.me.zPvPToggle.ZPvPToggle
 api-version: '1.21'
 authors: [ 'Zepsi_Zola_' ]
 description: PvP-Toggle Plugin. Lets players toggle their PvP status.
+depend: [MCKotlin-Paper]
 folia-supported: true
+
 commands:
   pvp:
     description: Toggle or manage PvP.

@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "1.8.22"
+    kotlin("jvm") version "1.9.22"
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
@@ -19,10 +19,7 @@ repositories {
 }
 
 dependencies {
-    // Compile-only dependency for Paper API (Folia-compatible)
     compileOnly("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
-
-    // Implementation dependency for Kotlin standard library
     implementation(kotlin("stdlib"))
 }
 
@@ -35,6 +32,12 @@ kotlin {
 tasks {
     build {
         dependsOn("shadowJar")
+    }
+
+    shadowJar {
+        archiveClassifier.set("shaded")
+        archiveVersion.set("")
+        minimize()
     }
 
     processResources {
