@@ -20,7 +20,9 @@ repositories {
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
-    implementation(kotlin("stdlib"))
+    compileOnly(kotlin("stdlib"))
+    implementation("org.bstats:bstats-bukkit:3.0.2")
+
 }
 
 val targetJavaVersion = 17 // Set to 17 or 21 based on your server's Java version

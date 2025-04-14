@@ -6,6 +6,7 @@ import zepsizola.me.zPvPToggle.listeners.PvpListener
 import zepsizola.me.zPvPToggle.managers.MessageManager
 import zepsizola.me.zPvPToggle.managers.PvpManager
 import zepsizola.me.zPvPToggle.tasks.ParticleIndicatorTask
+import org.bstats.bukkit.Metrics
 
 class ZPvPToggle : JavaPlugin() {
 
@@ -32,6 +33,7 @@ class ZPvPToggle : JavaPlugin() {
         // Start the particle indicator task
         ParticleIndicatorTask.start(this)
 
+        setupBStats()
         logger.info("ZPvPToggle has been enabled!")
     }
 
@@ -54,5 +56,11 @@ class ZPvPToggle : JavaPlugin() {
         ParticleIndicatorTask.start(this)
         
         logger.info("ZPvPToggle configuration has been reloaded!")
+    }
+
+    private fun setupBStats() {
+        // Initialize bStats
+        val pluginId = 25463
+        val metrics = Metrics(this, pluginId)
     }
 }
