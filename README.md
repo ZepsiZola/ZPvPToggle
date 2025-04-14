@@ -68,3 +68,22 @@ particle-indicator:
   # Set to -1 for unlimited distance.
   max-view-distance: 64
 ```
+
+## Compatibility
+
+- Paper 1.20.1 -> 1.21.4
+- Folia-compatible
+- Java 17+
+
+## Dependencies
+
+- [MCKotlin](https://modrinth.com/plugin/mckotlin)
+
+## Installation
+
+1. Download the latest version of ZPvPToggle from [Modrinth](https://modrinth.com/plugin/zpvptoggle/versions).
+2. Download the appropriate version of MCKotlin from [Modrinth](https://modrinth.com/plugin/mckotlin)
+3. Place the downloaded `.jar` files into your server's `plugins/` folder.
+4. Restart your server.
+5. Configure the plugin to your liking by editing the `.yml` files in the `plugins/ZPvPtoggle/` folder.
+
