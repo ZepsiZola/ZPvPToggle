@@ -47,6 +47,8 @@ particle-indicator:
   # Particle type for the indicator (e.g., REDSTONE, FLAME, etc.)
   # If you use REDSTONE, color and size settings will be applied.
   type: REDSTONE
+  # For a list of possible particles...
+  # https://minecraft.wiki/w/Particles_(Java_Edition)
 
   # For REDSTONE particles, specify the color name.
   # Use standard Bukkit color names (e.g., RED, BLUE, GREEN).
@@ -65,8 +67,7 @@ particle-indicator:
   y-offset: 0.1
   
   # Maximum distance (in blocks) at which players can see PvP indicators.
-  # Set to -1 for unlimited distance.
-  max-view-distance: 64
+  max-view-distance: 32
 ```
 
 ## Compatibility
@@ -82,7 +83,7 @@ particle-indicator:
 ## Installation
 
 1. Download the latest version of ZPvPToggle from [Modrinth](https://modrinth.com/plugin/zpvptoggle/versions).
-2. Download the appropriate version of MCKotlin from [Modrinth](https://modrinth.com/plugin/mckotlin)
+2. Download MCKotlin from [Modrinth](https://modrinth.com/plugin/mckotlin)
 3. Place the downloaded `.jar` files into your server's `plugins/` folder.
 4. Restart your server.
 5. Configure the plugin to your liking by editing the `.yml` files in the `plugins/ZPvPtoggle/` folder.
