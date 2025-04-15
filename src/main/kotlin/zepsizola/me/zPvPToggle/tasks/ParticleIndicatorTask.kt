@@ -30,10 +30,8 @@ object ParticleIndicatorTask {
         plugin.pvpManager.initializePvpEnabledCache()
         // Read interval from config.yml; default to 5 ticks
         val interval = plugin.config.getLong("particle-indicator.interval-ticks", 5L)
-        // Get the max view distance from config
-        val maxDistance = plugin.config.getDouble("particle-indicator.max-view-distance", 32.0)
-        // Ensure maxDistance is not negative or above 64
-        maxDistance = if (maxDistance < 0 || maxDistance > 64.0) 64.0 else maxDistance
+        // Get the max view distance from config and ensure it's between 0 and 64.
+        val maxDistance = plugin.config.getDouble("particle-indicator.max-view-distance", 32.0).coerceIn(0.0, 64.0)
         // Schedule the global task to run at a fixed rate
         task = plugin.server.globalRegionScheduler.runAtFixedRate(plugin, Consumer { _: ScheduledTask ->
             // Get all players with PvP enabled from the PvpManager

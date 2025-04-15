@@ -5,6 +5,8 @@ particle-indicator:
   # Particle type for the indicator (e.g., REDSTONE, FLAME, etc.)
   # If you use REDSTONE, color and size settings will be applied.
   type: REDSTONE
+  # For a list of possible particles...
+  # https://minecraft.wiki/w/Particles_(Java_Edition)
 
   # For REDSTONE particles, specify the color name.
   # Use standard Bukkit color names (e.g., RED, BLUE, GREEN).
