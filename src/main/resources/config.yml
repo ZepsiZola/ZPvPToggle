@@ -23,5 +23,6 @@ particle-indicator:
   y-offset: 0.1
   
   # Maximum distance (in blocks) at which players can see PvP indicators.
-  # Set to -1 for unlimited distance.
   max-view-distance: 32
+  # As far as I can tell, players can't even see particles further than 32 blocks away.
+  # I put the max limit for this value at 64 just in-case I'm wrong.

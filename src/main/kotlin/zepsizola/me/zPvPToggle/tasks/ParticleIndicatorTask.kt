@@ -24,19 +24,16 @@ object ParticleIndicatorTask {
     fun start(plugin: ZPvPToggle) {
         // Cancel any existing task to prevent duplicates
         stop()
-
         // Reload particle ring settings from config
         reloadParticleRing(plugin)
-
         // Initialize the PvP enabled players cache in PvpManager
         plugin.pvpManager.initializePvpEnabledCache()
-
         // Read interval from config.yml; default to 5 ticks
         val interval = plugin.config.getLong("particle-indicator.interval-ticks", 5L)
-        
         // Get the max view distance from config
         val maxDistance = plugin.config.getDouble("particle-indicator.max-view-distance", 32.0)
-
+        // Ensure maxDistance is not negative or above 64
+        maxDistance = if (maxDistance < 0 || maxDistance > 64.0) 64.0 else maxDistance
         // Schedule the global task to run at a fixed rate
         task = plugin.server.globalRegionScheduler.runAtFixedRate(plugin, Consumer { _: ScheduledTask ->
             // Get all players with PvP enabled from the PvpManager
@@ -139,7 +136,7 @@ object ParticleIndicatorTask {
             "FUCHSIA" -> Color.FUCHSIA
             "PURPLE" -> Color.PURPLE
             "ORANGE" -> Color.ORANGE
-            else -> null
+            else -> Color.GRAY // Default to gray if color is not recognized
         }
     }
 }
