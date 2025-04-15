@@ -24,4 +24,4 @@ particle-indicator:
   
   # Maximum distance (in blocks) at which players can see PvP indicators.
   # Set to -1 for unlimited distance.
-  max-view-distance: 64
+  max-view-distance: 32
