@@ -10,6 +10,8 @@ pvp_disabled_other: "%prefix% <white>PvP disabled for %player%."
 
 attack_pvp_disabled: "%prefix% <white>You cannot attack <red>%player%<white>. Both players must have PvP enabled."
 
+explosion_pvp_disabled: "%prefix% <white>Your explosion cannot damage <red>%player%<white>. Both players must have PvP enabled."
+
 show_indicators: "%prefix% <white>PvP indicators now <red>shown<white> to you."
 
 hide_indicators: "%prefix% <white>PvP indicators now <red>hidden<white> from you."

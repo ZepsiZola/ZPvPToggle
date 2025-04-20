@@ -58,11 +58,41 @@ class CommandManager(private val plugin: ZPvPToggle) : CommandExecutor, TabCompl
         val subCommand = getCommand(subCommandName)
         
         if (subCommand == null) {
-            // Check if this is an admin command targeting a player
-            if (sender.hasPermission("zpvptoggle.admin") && args.size >= 2) {
-                val targetCommand = getCommand("target")
-                if (targetCommand != null) {
-                    return targetCommand.execute(plugin, sender, args)
+            // Check if the first argument is a player name (for admin toggle)
+            if (sender.hasPermission("zpvptoggle.admin")) {
+                val targetPlayer = plugin.server.getPlayerExact(args[0])
+                if (targetPlayer != null) {
+                    // If it's a player name, toggle their PvP status
+                    val pvpManager = plugin.pvpManager
+                    val messageManager = plugin.messageManager
+                    
+                    val newState = pvpManager.togglePvp(targetPlayer)
+                    if (newState) {
+                        targetPlayer.sendMessage(messageManager.getMessage("pvp_enabled"))
+                        sender.sendMessage(
+                            messageManager.getMessage(
+                                "pvp_enabled_other",
+                                mapOf("%player%" to targetPlayer.name)
+                            )
+                        )
+                    } else {
+                        targetPlayer.sendMessage(messageManager.getMessage("pvp_disabled"))
+                        sender.sendMessage(
+                            messageManager.getMessage(
+                                "pvp_disabled_other",
+                                mapOf("%player%" to targetPlayer.name)
+                            )
+                        )
+                    }
+                    return true
+                }
+                
+                // If args[0] isn't a player name but we have more args, try the target command
+                if (args.size >= 2) {
+                    val targetCommand = getCommand("target")
+                    if (targetCommand != null) {
+                        return targetCommand.execute(plugin, sender, args)
+                    }
                 }
             }
             
@@ -95,12 +125,20 @@ class CommandManager(private val plugin: ZPvPToggle) : CommandExecutor, TabCompl
         }
         
         if (args.size == 1) {
+            val result = mutableListOf<String>()
+            
             // Tab complete the subcommand name
             val availableCommands = commands.values
                 .filter { it.canExecute(sender) }
                 .flatMap { listOf(it.name) + it.aliases }
+                .filter { it.startsWith(args[0].lowercase()) }
             
-            return availableCommands.filter { it.startsWith(args[0].lowercase()) }
+            result.addAll(availableCommands)
+            
+            // We don't suggest player names for the first argument anymore
+            // This is to match the requested behavior where `/pvp [player]` doesn't tab complete
+            
+            return result
         }
         
         // Tab complete arguments for the subcommand

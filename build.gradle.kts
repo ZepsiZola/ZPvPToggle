@@ -1,6 +1,6 @@
 plugins {
     kotlin("jvm") version "1.9.22"
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("com.gradleup.shadow") version "8.3.0"
 }
 
 group = "zepsizola.me"
@@ -19,13 +19,12 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
     compileOnly(kotlin("stdlib"))
     implementation("org.bstats:bstats-bukkit:3.0.2")
-
 }
 
-val targetJavaVersion = 17 // Set to 17 or 21 based on your server's Java version
+val targetJavaVersion = 21 // Set to 17 based on Gradle compatibility
 
 kotlin {
     jvmToolchain(targetJavaVersion)
@@ -37,7 +36,8 @@ tasks {
     }
 
     shadowJar {
-        relocate("org.bstats", "me.zepsizola.zPvPToggle.bstats")
+        // Fix the relocation path to match your actual package structure
+        relocate("org.bstats", "zepsizola.me.zPvPToggle.bstats")
         archiveVersion.set(project.version.toString())
         archiveClassifier.set("")
         minimize()

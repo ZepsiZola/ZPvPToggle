@@ -17,7 +17,7 @@ object ParticleIndicatorTask {
     private var radius: Double = 0.7
     private var points: Int = 32
     private var yOffset: Double = 0.1
-    private var particleType: Particle = Particle.REDSTONE
+    private var particleType: Particle = Particle.valueOf("REDSTONE")
     private var dustOptions: Particle.DustOptions? = null
 
 
@@ -58,7 +58,7 @@ object ParticleIndicatorTask {
                     }, null)
                 }
             }
-        }, 1L, interval)
+        }, interval, interval)
     }
 
     fun stop() {
@@ -75,15 +75,14 @@ object ParticleIndicatorTask {
         points = section.getInt("points", 32)
         yOffset = section.getDouble("y-offset", 0.1)
 
-        // Attempt to parse the Particle type. If invalid, fallback to REDSTONE.
         particleType = try {
             Particle.valueOf(typeName)
         } catch (_: IllegalArgumentException) {
-            Particle.REDSTONE
+            Particle.valueOf("REDSTONE")
         }
 
         // If using REDSTONE, parse color and size from config
-        dustOptions = if (particleType == Particle.REDSTONE) {
+        dustOptions = if (particleType == Particle.valueOf("REDSTONE")) {
             val colorName = section.getString("color", "RED")?.uppercase() ?: "RED"
             val dustSize = section.getDouble("dust-size", 1.0)
             val bukkitColor = colorFromString(colorName) ?: Color.RED
