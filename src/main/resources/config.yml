@@ -1,9 +1,3 @@
-# protect-against:
-#   regular:
-#   potion:
-#   bed-explosion:
-
-
 particle-indicator:
   # Interval in ticks to show the ring of particles. 20 ticks = 1 second.
   interval-ticks: 5
