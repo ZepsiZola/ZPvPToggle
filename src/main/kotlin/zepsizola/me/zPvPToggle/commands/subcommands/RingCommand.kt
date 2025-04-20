@@ -26,9 +26,13 @@ class RingCommand : SubCommand {
             sender.sendMessage("§6Your current ring style: §e$currentRing")
             sender.sendMessage("§6Available ring styles:")
             
+            val defaultRing = ringManager.getDefaultRing()
             for (ring in ringManager.getAllRings()) {
-                val selected = if (ring.id == currentRing) " §a(selected)" else ""
-                sender.sendMessage("§7- §e${ring.id}$selected")
+                // Only show rings the player has permission to use or the default ring
+                if (ring.id == defaultRing.id || sender.hasPermission("zpvptoggle.indicator.${ring.id}")) {
+                    val selected = if (ring.id == currentRing) " §a(selected)" else ""
+                    sender.sendMessage("§7- §e${ring.id}$selected")
+                }
             }
             return true
         }
@@ -40,6 +44,13 @@ class RingCommand : SubCommand {
         // If the ring doesn't exist (returns default), check if the ID matches
         if (ring.id != ringId) {
             sender.sendMessage("§cRing style '$ringId' not found. Use §e/pvp ring§c to see available styles.")
+            return true
+        }
+        
+        // Check if this is the default ring or if the player has permission to use it
+        val defaultRing = ringManager.getDefaultRing()
+        if (ring.id != defaultRing.id && !sender.hasPermission("zpvptoggle.indicator.${ring.id}")) {
+            sender.sendMessage("§cYou don't have permission to use the '$ringId' ring style.")
             return true
         }
         
@@ -56,10 +67,16 @@ class RingCommand : SubCommand {
             val ringManager = ParticleRingManager(plugin)
             ringManager.loadRings()
             
+            val defaultRing = ringManager.getDefaultRing()
             val input = args[0].lowercase()
+            
             return ringManager.getAllRings()
                 .map { it.id }
-                .filter { it.startsWith(input) }
+                .filter { 
+                    // Include the ring if it's the default or if the player has permission
+                    it.startsWith(input) && (it == defaultRing.id || 
+                        (sender is Player && sender.hasPermission("zpvptoggle.indicator.$it")))
+                }
         }
         return emptyList()
     }
