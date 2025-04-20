@@ -1,30 +1,134 @@
+# Whether to disable PvP when a player dies
+disable-pvp-on-death: true
+
 particle-indicator:
   # Interval in ticks to show the ring of particles. 20 ticks = 1 second.
   interval-ticks: 5
-
-  # Particle type for the indicator (e.g., REDSTONE, FLAME, etc.)
-  # If you use REDSTONE, color and size settings will be applied.
-  type: REDSTONE
-  # For a list of possible particles...
-  # https://minecraft.wiki/w/Particles_(Java_Edition)
-
-  # For REDSTONE particles, specify the color name.
-  # Use standard Bukkit color names (e.g., RED, BLUE, GREEN).
-  color: RED
-
-  # The size (thickness) of the dust for REDSTONE particles.
-  dust-size: 1.0
-
-  # Number of points around the ring (higher = smoother circle).
-  points: 32
-
-  # Radius of the particle ring.
-  radius: 0.8
-
-  # Y-offset above the player's feet.
-  y-offset: 0.1
-  
   # Maximum distance (in blocks) at which players can see PvP indicators.
   max-view-distance: 32
-  # As far as I can tell, players can't even see particles further than 32 blocks away.
-  # I put the max limit for this value at 64 just in-case I'm wrong.
+  # The default indicator to use (must match one of the keys in the indicators section)
+  default-indicator: default
+  # Define multiple particle ring indicators
+  indicators:
+    # Default ring - red circle around feet
+    default: 
+      type: REDSTONE
+      points: 32
+      radius: 0.8
+      y-offset: 0.1
+      random-offset-vertical: 0.0
+      random-offset-horizontal: 0.0
+      speed: 0.01
+      color: RED
+      dust-size: 1.0
+
+    blue:
+      type: REDSTONE
+      points: 32
+      radius: 0.8
+      y-offset: 0.1
+      random-offset-vertical: 0.0
+      random-offset-horizontal: 0.03
+      speed: 0.01
+      color: BLUE
+      dust-size: 1.0
+    
+    angry: 
+      type: TRIAL_SPAWNER_DETECTION
+      points: 13
+      radius: 0.3
+      y-offset: 2.5
+      random-offset-vertical: 0.0
+      random-offset-horizontal: 0.01
+      speed: 0.01
+      
+    flame:
+      type: FLAME
+      points: 4
+      radius: 0.4
+      y-offset: 0.9
+      random-offset-vertical: 0.5
+      random-offset-horizontal: 0.0
+      speed: 0.01
+
+    gradient:
+      type: DUST_COLOR_TRANSITION
+      points: 32
+      radius: 0.8
+      y-offset: 0.9
+      random-offset-vertical: 0.5
+      random-offset-horizontal: 0.1
+      speed: 0.00
+      from-color: YELLOW
+      to-color: FUCHSIA
+      dust-size: 1.0
+      
+    barrier:
+      type: BLOCK_MARKER
+      points: 1
+      radius: 0.0
+      y-offset: 2.8
+      random-offset-vertical: 0.0
+      random-offset-horizontal: 0.0
+      speed: 0.0
+      block-data: BARRIER
+      
+    slime:
+      type: DUST_PILLAR
+      points: 7
+      radius: 0.7
+      y-offset: 0.3
+      random-offset-vertical: 0.3
+      random-offset-horizontal: 0.3
+      speed: 0.03
+      block-data: SLIME_BLOCK
+
+    snow:
+      type: FALLING_DUST
+      points: 2
+      radius: 0
+      y-offset: 2
+      random-offset-vertical: 0.3
+      random-offset-horizontal: 0.6
+      speed: 0.001
+      block-data: SNOW
+      
+    armour-crumbling:
+      type: ITEM
+      points: 3
+      radius: 0.4
+      y-offset: 1
+      random-offset-vertical: 0.2
+      random-offset-horizontal: 0.2
+      speed: 0.01
+      item-data: NETHERITE_CHESTPLATE
+      
+    entity-effect:
+      type: ENTITY_EFFECT
+      points: 8
+      radius: 0.5
+      y-offset: 0.1
+      random-offset-vertical: 0.0
+      random-offset-horizontal: 0.2
+      speed: 0.00000
+      color: RED
+
+    sculk:
+      type: SCULK_CHARGE
+      points: 8
+      radius: 0.5
+      y-offset: 0.27
+      random-offset-vertical: 0.0
+      random-offset-horizontal: 0.3
+      speed: 0.0
+      sculk-charge: 0.0
+
+    shriek:
+      type: SHRIEK
+      points: 10
+      radius: 0
+      y-offset: 2.2
+      random-offset-vertical: 0.3
+      random-offset-horizontal: 0.1
+      speed: 0
+      sculk-shriek: 0

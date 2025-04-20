@@ -8,7 +8,8 @@ import java.util.concurrent.ConcurrentHashMap
 data class PlayerState(
     var pvpEnabled: Boolean = false,
     var canSeeIndicators: Boolean = true,  // Whether this player can see indicators of other players
-    var firstToggleOnThisSession: Boolean = true
+    var firstToggleOnThisSession: Boolean = true,
+    var indicatorRingId: String = "default"  // The ID of the particle ring to use for this player
 )
 
 class PvpManager(private val plugin: ZPvPToggle) {
@@ -63,9 +64,27 @@ class PvpManager(private val plugin: ZPvPToggle) {
         state.canSeeIndicators = !state.canSeeIndicators
         return state.canSeeIndicators
     }
-
     fun canSeeIndicators(player: Player): Boolean {
         return getState(player).canSeeIndicators
+    }
+    
+    /**
+     * Set the indicator ring for a player
+     * @param player The player to set the ring for
+     * @param ringId The ID of the ring to use
+     */
+    fun setIndicatorRing(player: Player, ringId: String) {
+        val state = getState(player)
+        state.indicatorRingId = ringId
+    }
+    
+    /**
+     * Get the indicator ring ID for a player
+     * @param player The player to get the ring for
+     * @return The ID of the ring
+     */
+    fun getIndicatorRingId(player: Player): String {
+        return getState(player).indicatorRingId
     }
 
     fun isFirstToggleOnThisSession(player: Player): Boolean {

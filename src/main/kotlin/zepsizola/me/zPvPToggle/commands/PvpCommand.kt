@@ -21,6 +21,7 @@ class PvpCommand(private val plugin: ZPvPToggle) : CommandExecutor, TabCompleter
         commandManager.registerCommand(HelpCommand())
         commandManager.registerCommand(ReloadCommand())
         commandManager.registerCommand(TargetCommand())
+        commandManager.registerCommand(RingCommand())
     }
 
     override fun onCommand(sender: CommandSender, cmd: Command, label: String, args: Array<out String>): Boolean {

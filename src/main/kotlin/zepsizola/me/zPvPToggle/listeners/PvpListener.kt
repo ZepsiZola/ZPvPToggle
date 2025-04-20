@@ -5,6 +5,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDamageByEntityEvent
+import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.entity.EntityDamageByBlockEvent
 import io.papermc.paper.event.player.PlayerBedFailEnterEvent
 import io.papermc.paper.event.player.PlayerBedFailEnterEvent.FailReason
@@ -234,6 +235,19 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
             //     mapOf("%player%" to affectedEntity.name)
             // )
             // thrower.sendMessage(message)
+        }
+    }
+
+    @EventHandler
+    fun onPlayerDeath(event: PlayerDeathEvent) {
+        if (!plugin.disablePvpOnDeath) return
+        val player = event.player
+        if (plugin.pvpManager.isPvpEnabled(player)) {
+            plugin.pvpManager.setPvp(player, false)
+            val message = plugin.messageManager.getMessage(
+                "pvp_disabled_on_death",
+                mapOf("%player%" to player.name)
+            )
         }
     }
 }

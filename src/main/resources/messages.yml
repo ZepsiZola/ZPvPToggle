@@ -8,6 +8,8 @@ pvp_enabled_other: "%prefix% <white>PvP enabled for %player%."
 
 pvp_disabled_other: "%prefix% <white>PvP disabled for %player%."
 
+pvp_disabled_on_death: "%prefix% <white>Your PvP has been disabled because you died."
+
 attack_pvp_disabled: "%prefix% <white>You cannot attack <red>%player%<white>. Both players must have PvP enabled."
 
 explosion_pvp_disabled: "%prefix% <white>Your explosion cannot damage <red>%player%<white>. Both players must have PvP enabled."
@@ -21,14 +23,15 @@ invalid_command: "<red>ERROR <dark_red>»</dark_red> <white>Do <red>/pvp help</r
 help_message: |
 
   <white>----------- <red>ZPvPToggle Commands <white>-----------
-  <red>/pvp <gray>-</gray> <white>Toggle PvP status
-  <red>/pvp toggle <gray>-</gray> <white>Toggle PvP status
-  <red>/pvp on <gray>-</gray> <white>Enable PvP
-  <red>/pvp off <gray>-</gray> <white>Disable PvP
-  <red>/pvp hide <gray>-</gray> <white>Hide PvP particle indicators
-  <red>/pvp show <gray>-</gray> <white>Show PvP particle indicators
-  <red>/pvp help <gray>-</gray> <white>Display the help message
-  <red>/pvp reload <gray>-</gray> <white>Reload plugin configuration (Admin)
+  <red>/pvp <gray>-<white> Toggle PvP status
+  <red>/pvp toggle <gray>-<white> Toggle PvP status
+  <red>/pvp on <gray>-<white> Enable PvP
+  <red>/pvp off <gray>-<white> Disable PvP
+  <red>/pvp hide <gray>-<white> Hide PvP particle indicators
+  <red>/pvp show <gray>-<white> Show PvP particle indicators
+  <red>/pvp help <gray>-<white> Display the help message
+  <red>/pvp ring <gray>-<white> Change your PvP indicator style
+  <red>/pvp reload <gray>-<white> Reload plugin configuration (Admin)
   <white>-------------------------------------------
 
 arena_message: |
