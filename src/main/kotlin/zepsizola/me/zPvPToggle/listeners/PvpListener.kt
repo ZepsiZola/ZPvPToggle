@@ -248,6 +248,7 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
                 "pvp_disabled_on_death",
                 mapOf("%player%" to player.name)
             )
+            player.sendMessage(message)
         }
     }
 }

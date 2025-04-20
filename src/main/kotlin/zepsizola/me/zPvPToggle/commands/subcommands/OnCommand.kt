@@ -46,8 +46,8 @@ class OnCommand : SubCommand {
         
         pvpManager.setPvp(sender, true)
         
-        if (pvpManager.isFirstToggleOnThisSession(sender)) {
-            sender.sendMessage(messageManager.getMessage("arena_message"))
+        if (pvpManager.isFirstToggleOnThisSession(sender) && plugin.warningMessageEnabled) {
+            sender.sendMessage(messageManager.getMessage("warning_message"))
         }
         sender.sendMessage(messageManager.getMessage("pvp_enabled"))
         

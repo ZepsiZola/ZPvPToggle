@@ -7,11 +7,11 @@ import zepsizola.me.zPvPToggle.commands.SubCommand
 import zepsizola.me.zPvPToggle.models.ParticleRingManager
 
 class RingCommand : SubCommand {
-    override val name = "ring"
+    override val name = "indicator"
     override val permission = "zpvptoggle.user"
     override val playerOnly = true
     override val description = "Change your PvP indicator ring style"
-    override val usage = "/pvp ring <style>"
+    override val usage = "/pvp indicator <style>"
     
     override fun execute(plugin: ZPvPToggle, sender: CommandSender, args: Array<out String>): Boolean {
         if (sender !is Player) return false
@@ -23,15 +23,22 @@ class RingCommand : SubCommand {
         // If no args, list available rings
         if (args.isEmpty()) {
             val currentRing = plugin.pvpManager.getIndicatorRingId(sender)
-            sender.sendMessage("§6Your current ring style: §e$currentRing")
-            sender.sendMessage("§6Available ring styles:")
             
+            // Get messages using MessageManager
+            sender.sendMessage(plugin.messageManager.getMessage(
+                "indicator.available_styles", 
+                mapOf("%indicator%" to currentRing)
+            ))
+            // sender.sendMessage(plugin.messageManager.getMessage("indicator.available_styles"))
             val defaultRing = ringManager.getDefaultRing()
             for (ring in ringManager.getAllRings()) {
                 // Only show rings the player has permission to use or the default ring
                 if (ring.id == defaultRing.id || sender.hasPermission("zpvptoggle.indicator.${ring.id}")) {
-                    val selected = if (ring.id == currentRing) " §a(selected)" else ""
-                    sender.sendMessage("§7- §e${ring.id}$selected")
+                    val selected = if (ring.id == currentRing) " (selected)" else ""
+                    sender.sendMessage(plugin.messageManager.getMessage(
+                        "indicator.style_entry", 
+                        mapOf("%indicator%" to ring.id, "%selected%" to selected)
+                    ))
                 }
             }
             return true
@@ -41,22 +48,31 @@ class RingCommand : SubCommand {
         val ringId = args[0].lowercase()
         val ring = ringManager.getRing(ringId)
         
-        // If the ring doesn't exist (returns default), check if the ID matches
+// If the ring doesn't exist (returns default), check if the ID matches
         if (ring.id != ringId) {
-            sender.sendMessage("§cRing style '$ringId' not found. Use §e/pvp ring§c to see available styles.")
+            sender.sendMessage(plugin.messageManager.getMessage(
+                "indicator.not_found", 
+                mapOf("%indicator%" to ringId)
+            ))
             return true
         }
         
         // Check if this is the default ring or if the player has permission to use it
         val defaultRing = ringManager.getDefaultRing()
         if (ring.id != defaultRing.id && !sender.hasPermission("zpvptoggle.indicator.${ring.id}")) {
-            sender.sendMessage("§cYou don't have permission to use the '$ringId' ring style.")
+            sender.sendMessage(plugin.messageManager.getMessage(
+                "indicator.no_permission", 
+                mapOf("%indicator%" to ringId)
+            ))
             return true
         }
         
         // Set the player's ring style
         plugin.pvpManager.setIndicatorRing(sender, ringId)
-        sender.sendMessage("§aYour PvP indicator ring style has been set to §e$ringId§a.")
+        sender.sendMessage(plugin.messageManager.getMessage(
+            "indicator.set_success", 
+            mapOf("%indicator%" to ringId)
+        ))
         
         return true
     }

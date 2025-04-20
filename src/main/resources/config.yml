@@ -1,5 +1,6 @@
 # Whether to disable PvP when a player dies
 disable-pvp-on-death: true
+warning-message-enabled: true
 
 particle-indicator:
   # Interval in ticks to show the ring of particles. 20 ticks = 1 second.

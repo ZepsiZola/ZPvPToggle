@@ -13,6 +13,7 @@ class ZPvPToggle : JavaPlugin() {
     lateinit var pvpManager: PvpManager
     lateinit var messageManager: MessageManager
     var disablePvpOnDeath = true
+    var warningMessageEnabled = true
 
     override fun onEnable() {
         // Save default config and messages.yml if they don't exist
@@ -49,6 +50,7 @@ class ZPvPToggle : JavaPlugin() {
         // Reload config files
         reloadConfig()
         disablePvpOnDeath = config.getBoolean("disable-pvp-on-death", true)
+        warningMessageEnabled = config.getBoolean("warning-message-enabled", true)
         
         // Reload messages
         messageManager.reload()

@@ -1,4 +1,5 @@
 prefix: "<red>ZPvPToggle <dark_red>»</dark_red>"
+error_prefix: "<bold><red>ERROR <dark_red>»</dark_red></bold>"
 
 pvp_enabled: "%prefix% <white>PvP enabled."
 
@@ -18,7 +19,14 @@ show_indicators: "%prefix% <white>PvP indicators now <red>shown<white> to you."
 
 hide_indicators: "%prefix% <white>PvP indicators now <red>hidden<white> from you."
 
-invalid_command: "<red>ERROR <dark_red>»</dark_red> <white>Do <red>/pvp help</red> <white>for a list of valid commands."
+invalid_command: "%error_prefix% <white>Do <red>/pvp help</red> <white>for a list of valid commands."
+
+indicator:
+  available_styles: "%prefix% <white>Available indicator styles...</white>"
+  style_entry: " <gray>- <white>%indicator%<red>%selected%</red></white></gray>"
+  not_found: "%error_prefix% <white>Indicator style '<red>%indicator%</red>' not found. Use <red>/pvp ring</red> to see available styles.</white>"
+  no_permission: "%error_prefix% <red>You don't have permission to use the '%indicator%' indicator.</red>"
+  set_success: "%prefix% <white>PvP indicator set to <red>%indicator%</red>.</white>"
 
 help_message: |
 
@@ -34,12 +42,10 @@ help_message: |
   <red>/pvp reload <gray>-<white> Reload plugin configuration (Admin)
   <white>-------------------------------------------
 
-arena_message: |
+warning_message: |
 
-  <red>|
-  <red>| <white><red>KeepInv is off <white>except in designated <red>/pvp<white> Warps.</white>
-  <red>| <white>Go to [/warp pvp] and [/warp PvPComplex].</white>
+  <red>| <bold>WARNING</bold>
+  <red>| <white>KeepInv is off on this server!
   <red>| <white>Items stolen in PvP will not be returned by Staff.</white>
-  <red>|
 
 config_reloaded: "%prefix% <white>Configuration reloaded."
