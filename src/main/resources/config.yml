@@ -235,7 +235,7 @@ particle-indicator:
       random-offset-horizontal: 0
       speed: 0.0
 
-    vault_connection:
+    vault-connection:
       type: vault_connection
       points: 40
       random-particle-positions: true
