@@ -9,6 +9,7 @@ import zepsizola.me.zPvPToggle.ZPvPToggle
 import java.util.function.Consumer
 import kotlin.math.cos
 import kotlin.math.sin
+import kotlin.random.Random
 import java.util.concurrent.TimeUnit.MILLISECONDS
 import zepsizola.me.zPvPToggle.models.ParticleRingManager
 import zepsizola.me.zPvPToggle.models.ParticleRingSettings
@@ -17,6 +18,9 @@ object ParticleIndicatorTask {
 
     private var task: ScheduledTask? = null
     private lateinit var ringManager: ParticleRingManager
+    private var indicatorCheckInterval: Long = 1000L
+    private var indicatorCheckIntervalTicks: Long = 20L
+
 
     fun start(plugin: ZPvPToggle) {
         // Cancel any existing task to prevent duplicates
@@ -30,7 +34,8 @@ object ParticleIndicatorTask {
         plugin.pvpManager.initializePvpEnabledCache()
         
         // Read interval from config.yml; default to 5 ticks
-        val interval = plugin.config.getLong("particle-indicator.interval-ticks", 5L) * 50L
+        indicatorCheckIntervalTicks = plugin.config.getLong("particle-indicator.interval-ticks", 5L)
+        indicatorCheckInterval = indicatorCheckIntervalTicks * 50L
         
         // Get the max view distance from config and ensure it's between 0 and 64.
         val maxDistance = plugin.config.getDouble("particle-indicator.max-view-distance", 32.0).coerceIn(0.0, 64.0)
@@ -65,18 +70,52 @@ object ParticleIndicatorTask {
                         if (!plugin.pvpManager.getState(observer).canSeeIndicators) continue
                         
                         // Schedule an immediate task for the observer to see the ring
-                        observer.scheduler.run(plugin, Consumer { _: ScheduledTask ->
-                            ringManager.showParticleRing(pvpPlayer, observer, ring)
-                        }, null)
+                        // var curr = 0
+                        // observer.scheduler.runAtFixedRate(plugin, Consumer { _: ScheduledTask ->
+                        //     if (curr >= 20) return@Consumer // Stop if count exceeds 20
+                        //     curr++
+                        showParticleRing(pvpPlayer, observer, ring, plugin)
+                        // }, null, 1L, 1L)
                     }
                 })
             }
-        }, interval, interval, MILLISECONDS)
+        }, indicatorCheckInterval, indicatorCheckInterval, MILLISECONDS)
     }
 
     fun stop() {
         task?.cancel()
         task = null
+    }
+
+
+    fun showParticleRing(player: Player, observer: Player, ring: ParticleRingSettings, plugin: ZPvPToggle) {
+        var curr = 0
+        val end = Math.round(indicatorCheckIntervalTicks.toDouble() / ring.interval.toInt()).toInt()
+        observer.scheduler.runAtFixedRate(plugin, Consumer { _: ScheduledTask ->
+            if (curr >= end) return@Consumer // Stop if count exceeds 20
+            curr++
+            val location = player.location
+
+            val center = location.clone().add(0.0, ring.yOffset, 0.0)
+            // Generate a ring with "points" around the player
+            for (i in 0 until ring.points) {
+                val angle = if (!ring.randomParticlePositions) 2.0 * Math.PI * i / ring.points else Random.nextDouble(0.0, 2 * Math.PI)
+                val x = ring.radius * cos(angle)
+                val z = ring.radius * sin(angle)
+                val particleLoc = center.clone().add(x, 0.0, z)
+
+                observer.spawnParticle(
+                    ring.type,
+                    particleLoc,
+                    1,
+                    ring.randomOffsetHoriz,
+                    ring.randomOffsetVert,
+                    ring.randomOffsetHoriz,
+                    ring.speed,
+                    ring.extra as? Any
+                )
+            }
+        }, null, ring.interval, ring.interval)
     }
 
     // private fun reloadParticleRing(plugin: ZPvPToggle) {
@@ -123,5 +162,4 @@ object ParticleIndicatorTask {
     //         }
     //     }
     // }
-
 }

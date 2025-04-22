@@ -4,7 +4,7 @@ warning-message-enabled: true
 
 particle-indicator:
   # Interval in ticks to show the ring of particles. 20 ticks = 1 second.
-  interval-ticks: 5
+  interval-ticks: 20
   # Maximum distance (in blocks) at which players can see PvP indicators.
   max-view-distance: 32
   # The default indicator to use (must match one of the keys in the indicators section)
@@ -13,123 +13,79 @@ particle-indicator:
   indicators:
     # Default ring - red circle around feet
     default: 
-      type: REDSTONE
-      points: 32
-      radius: 0.8
-      y-offset: 0.1
-      random-offset-vertical: 0.0
-      random-offset-horizontal: 0.0
-      speed: 0.01
-      color: RED
-      dust-size: 1.0
-
-    blue:
-      type: REDSTONE
-      points: 32
-      radius: 0.8
-      y-offset: 0.1
-      random-offset-vertical: 0.0
-      random-offset-horizontal: 0.03
-      speed: 0.01
-      color: BLUE
-      dust-size: 1.0
-    
-    angry: 
-      type: TRIAL_SPAWNER_DETECTION
-      points: 13
-      radius: 0.3
-      y-offset: 2.5
-      random-offset-vertical: 0.0
-      random-offset-horizontal: 0.01
-      speed: 0.01
-      
-    flame:
-      type: FLAME
-      points: 4
-      radius: 0.4
-      y-offset: 0.9
-      random-offset-vertical: 0.5
-      random-offset-horizontal: 0.0
-      speed: 0.01
-
-    gradient:
-      type: DUST_COLOR_TRANSITION
-      points: 32
-      radius: 0.8
-      y-offset: 0.9
-      random-offset-vertical: 0.5
-      random-offset-horizontal: 0.1
-      speed: 0.00
-      from-color: YELLOW
-      to-color: FUCHSIA
-      dust-size: 1.0
-      
-    barrier:
-      type: BLOCK_MARKER
-      points: 1
-      radius: 0.0
-      y-offset: 2.8
-      random-offset-vertical: 0.0
-      random-offset-horizontal: 0.0
-      speed: 0.0
-      block-data: BARRIER
-      
-    slime:
-      type: DUST_PILLAR
-      points: 7
+    bubble_column:
+      type: bubble_column_up
+      points: 15
+      random-particle-positions: true
       radius: 0.7
-      y-offset: 0.3
-      random-offset-vertical: 0.3
-      random-offset-horizontal: 0.3
-      speed: 0.03
-      block-data: SLIME_BLOCK
+      interval: 5
+      y-offset: 0.5
+      random-offset-vertical: 0.25
+      random-offset-horizontal: 0.0
+      speed: 0.0
 
-    snow:
-      type: FALLING_DUST
-      points: 2
-      radius: 0
-      y-offset: 2
-      random-offset-vertical: 0.3
-      random-offset-horizontal: 0.6
-      speed: 0.001
-      block-data: SNOW
-      
-    armour-crumbling:
-      type: ITEM
+    cherry-tree:
+      type: cherry_leaves
       points: 3
-      radius: 0.4
-      y-offset: 1
-      random-offset-vertical: 0.2
+      random-particle-positions: true
+      radius: 1.3
+      interval: 5
+      y-offset: 2.5
+      random-offset-vertical: 0.25
       random-offset-horizontal: 0.2
+      speed: 0
+
+    soul:
+      type: soul
+      points: 12
+      random-particle-positions: true
+      radius: 0.3
+      interval: 15
+      y-offset: 0.2
+      random-offset-vertical: 0.1
+      random-offset-horizontal: 0.05
       speed: 0.01
-      item-data: NETHERITE_CHESTPLATE
-      
-    entity-effect:
-      type: ENTITY_EFFECT
-      points: 8
+
+    soulfire:
+      type: soul_fire_flame
+      points: 5
+      random-particle-positions: false
+      radius: 0.9
+      interval: 2
+      y-offset: 0.1
+      random-offset-vertical: 0
+      random-offset-horizontal: 0
+      speed: 0.00
+
+    lazer:
+      type: trial_spawner_detection_ominous
+      points: 4
+      random-particle-positions: false
+      radius: 0.9
+      interval: 1
+      y-offset: 0.2
+      random-offset-vertical: 0
+      random-offset-horizontal: 0
+      speed: 0.0
+
+    vault-connection:
+      type: vault_connection
+      points: 40
+      random-particle-positions: true
       radius: 0.5
+      interval: 1
+      y-offset: 0.5
+      random-offset-vertical: 0.3
+      random-offset-horizontal: 0
+      speed: 0.2
+
+    witch:
+      type: witch
+      points: 16
+      random-particle-positions: true
+      radius: 0.8
+      interval: 2
       y-offset: 0.1
       random-offset-vertical: 0.0
-      random-offset-horizontal: 0.2
-      speed: 0.00000
-      color: RED
-
-    sculk:
-      type: SCULK_CHARGE
-      points: 8
-      radius: 0.5
-      y-offset: 0.27
-      random-offset-vertical: 0.0
-      random-offset-horizontal: 0.3
+      random-offset-horizontal: 0
       speed: 0.0
-      sculk-charge: 0.0
-
-    shriek:
-      type: SHRIEK
-      points: 10
-      radius: 0
-      y-offset: 2.2
-      random-offset-vertical: 0.3
-      random-offset-horizontal: 0.1
-      speed: 0
-      sculk-shriek: 0

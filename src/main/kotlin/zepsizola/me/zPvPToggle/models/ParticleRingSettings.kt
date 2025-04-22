@@ -14,6 +14,8 @@ data class ParticleRingSettings(
     val yOffset: Double,
     val randomOffsetVert: Double,
     val randomOffsetHoriz: Double,
+    val interval: Long,
+    val randomParticlePositions: Boolean,
     val speed: Double = 0.0,
     val extra: Any? = null
 ) {
@@ -41,6 +43,8 @@ data class ParticleRingSettings(
         const val DEFAULT_RANDOM_OFFSET_VERT = 0.0
         const val DEFAULT_RANDOM_OFFSET_HORIZ = 0.0
         const val DEFAULT_SPEED = 0.0
+        const val DEFAULT_INTERVAL = 5
+        const val DEFAULT_RANDOM_PARTICLE_POSITIONS = false
         // const val DEFAULT_EXTRA = Particle.DustOptions(Color.RED, 1.0.toFloat())
         
         // Create a default ring with the given ID
@@ -54,7 +58,9 @@ data class ParticleRingSettings(
                 extra = Particle.DustOptions(Color.RED, DEFAULT_DUST_SIZE.toFloat()),
                 randomOffsetVert = DEFAULT_RANDOM_OFFSET_VERT,
                 randomOffsetHoriz = DEFAULT_RANDOM_OFFSET_HORIZ,
-                speed = DEFAULT_SPEED
+                speed = DEFAULT_SPEED,
+                interval = DEFAULT_INTERVAL.toLong(),
+                randomParticlePositions = DEFAULT_RANDOM_PARTICLE_POSITIONS
             )
         }
     }
