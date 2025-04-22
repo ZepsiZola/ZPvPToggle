@@ -244,7 +244,7 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
         }
     }
 
-@EventHandler
+    @EventHandler
     fun onPlayerDeath(event: PlayerDeathEvent) {
         if (!plugin.disablePvpOnDeath) return
         val player = event.player
@@ -301,7 +301,6 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
         val vehicle = event.entity
         if (vehicle !is ExplosiveMinecart) return
         vehicle.persistentDataContainer.set(NamespacedKey(plugin, "placer"), PersistentDataType.STRING, player.uniqueId.toString())
-        }
     }
     
     
