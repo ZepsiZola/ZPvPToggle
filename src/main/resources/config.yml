@@ -13,6 +13,173 @@ particle-indicator:
   indicators:
     # Default ring - red circle around feet
     default: 
+      type: REDSTONE
+      points: 32
+      random-particle-positions: false
+      radius: 0.8
+      y-offset: 0.1
+      interval: 5
+      random-offset-vertical: 0.0
+      random-offset-horizontal: 0.0
+      speed: 0.01
+      color: RED
+      dust-size: 1.0
+
+    blue:
+      type: REDSTONE
+      points: 32
+      random-particle-positions: false
+      radius: 0.8
+      y-offset: 0.1
+      interval: 5
+      random-offset-vertical: 0.0
+      random-offset-horizontal: 0.03
+      speed: 0.01
+      color: BLUE
+      dust-size: 1.0
+    
+    angry: 
+      type: TRIAL_SPAWNER_DETECTION
+      points: 3
+      random-particle-positions: true
+      radius: 0.2
+      interval: 1
+      y-offset: 2.5
+      random-offset-vertical: 0.0
+      random-offset-horizontal: 0.1
+      speed: 0.01
+      
+    flame:
+      type: FLAME
+      points: 4
+      random-particle-positions: true
+      radius: 0.4
+      interval: 4
+      y-offset: 0.4
+      random-offset-vertical: 0.2
+      random-offset-horizontal: 0.0
+      speed: 0.01
+
+    gradient:
+      type: DUST_COLOR_TRANSITION
+      points: 32
+      random-particle-positions: false
+      radius: 0.8
+      interval: 20
+      y-offset: 0.9
+      random-offset-vertical: 0.5
+      random-offset-horizontal: 0.1
+      speed: 0.00
+      from-color: YELLOW
+      to-color: FUCHSIA
+      dust-size: 1.0
+      
+    barrier:
+      type: BLOCK_MARKER
+      points: 1
+      random-particle-positions: false
+      radius: 0.0
+      interval: 20
+      y-offset: 2.8
+      random-offset-vertical: 0.0
+      random-offset-horizontal: 0.0
+      speed: 0.0
+      block-data: BARRIER
+      
+    slime:
+      type: DUST_PILLAR
+      points: 2
+      random-particle-positions: true
+      radius: 0.7
+      interval: 2
+      y-offset: 0.3
+      random-offset-vertical: 0.3
+      random-offset-horizontal: 0.3
+      speed: 0.03
+      block-data: SLIME_BLOCK
+
+    snow:
+      type: FALLING_DUST
+      points: 2
+      random-particle-positions: true
+      radius: 0
+      interval: 5
+      y-offset: 2
+      random-offset-vertical: 0.3
+      random-offset-horizontal: 0.6
+      speed: 0.001
+      block-data: SNOW
+      
+    armour-crumbling:
+      type: ITEM
+      points: 1
+      random-particle-positions: true
+      radius: 0.4
+      interval: 1
+      y-offset: 1
+      random-offset-vertical: 0.2
+      random-offset-horizontal: 0.0
+      speed: 0.01
+      item-data: NETHERITE_CHESTPLATE
+      
+    entity-effect:
+      type: ENTITY_EFFECT
+      points: 8
+      random-particle-positions: true
+      radius: 0.5
+      interval: 5
+      y-offset: 0.1
+      random-offset-vertical: 0.0
+      random-offset-horizontal: 0.2
+      speed: 0.00000
+      color: PURPLE
+
+    sculk:
+      type: SCULK_CHARGE
+      points: 10
+      random-particle-positions: true
+      radius: 0.5
+      interval: 20
+      y-offset: 0.27
+      random-offset-vertical: 0.0
+      random-offset-horizontal: 0.3
+      speed: 0.0
+      sculk-charge: 0.0
+
+    shriek:
+      type: SHRIEK
+      points: 10
+      random-particle-positions: false
+      radius: 0
+      interval: 5
+      y-offset: 2.2
+      random-offset-vertical: 0.3
+      random-offset-horizontal: 0.1
+      speed: 0
+      sculk-shriek: 0
+
+    enchant:
+      type: enchant
+      points: 24
+      random-particle-positions: true
+      radius: 0.1
+      interval: 5
+      y-offset: 3
+      random-offset-vertical: 0.0
+      random-offset-horizontal: 0.0
+      speed: 0.5
+
+    bubble:
+      type: current_down
+      points: 15
+      random-particle-positions: true
+      radius: 0.7
+      interval: 5
+      y-offset: 0.5
+      random-offset-vertical: 0.25
+      random-offset-horizontal: 0.0
+      speed: 0.0
+
     bubble_column:
       type: bubble_column_up
       points: 15
@@ -68,7 +235,7 @@ particle-indicator:
       random-offset-horizontal: 0
       speed: 0.0
 
-    vault-connection:
+    vault_connection:
       type: vault_connection
       points: 40
       random-particle-positions: true
