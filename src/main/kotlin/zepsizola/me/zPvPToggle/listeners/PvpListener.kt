@@ -33,12 +33,18 @@ import org.bukkit.block.data.BlockData
 import java.util.function.Consumer
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import io.papermc.paper.threadedregions.scheduler.RegionScheduler
+import org.bukkit.entity.TNTPrimed
+import org.bukkit.entity.minecart.ExplosiveMinecart
+import org.bukkit.event.entity.EntityExplodeEvent
+import org.bukkit.event.entity.ExplosionPrimeEvent
+import org.bukkit.entity.Entity
 
 class PvpListener(private val plugin: ZPvPToggle) : Listener {
 
     private val attackerKey: NamespacedKey = NamespacedKey(plugin, "attacker")
     private val lastRespawnAnchorInteraction = java.util.concurrent.ConcurrentHashMap<Player, Collection<Player>>()
     private val lastBedInteraction = java.util.concurrent.ConcurrentHashMap<Player, Collection<Player>>()
+    private val tntOwners = java.util.concurrent.ConcurrentHashMap<Entity, Player>()
 
     /**
      * Checks if PvP is valid for the given attacker and victim.
@@ -238,7 +244,7 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
         }
     }
 
-    @EventHandler
+@EventHandler
     fun onPlayerDeath(event: PlayerDeathEvent) {
         if (!plugin.disablePvpOnDeath) return
         val player = event.player
@@ -250,5 +256,77 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
             )
             player.sendMessage(message)
         }
+    }
+    
+    /**
+     * Track TNT when it's primed by a player
+     */
+    @EventHandler
+    fun onTNTPrimed(event: ExplosionPrimeEvent) {
+        val entity = event.entity
+        if (entity !is TNTPrimed && entity !is ExplosiveMinecart) return
+        
+        // Get the entity that ignited the TNT
+        val source = when (entity) {
+            is TNTPrimed -> entity.source as? Player
+            is ExplosiveMinecart -> {
+                // For TNT minecarts, we need to check the persistent data
+                val sourceUUID = entity.persistentDataContainer.get(
+                    NamespacedKey(plugin, "placer"),
+                    PersistentDataType.STRING
+                )
+                if (sourceUUID != null) {
+                    plugin.server.getPlayer(java.util.UUID.fromString(sourceUUID))
+                } else null
+            }
+            else -> null
+        }
+        
+        if (source != null) {
+            tntOwners[entity] = source
+            
+            // Remove the entity from the map after a delay (in case the explosion doesn't happen)
+            plugin.server.regionScheduler.runDelayed(plugin, entity.location, Consumer {_: ScheduledTask ->
+                tntOwners.remove(entity)
+            }, 100L) // 5 seconds (100 ticks)
+        }
+    }
+    
+    /**
+     * Track TNT minecarts when placed by a player
+     */
+    @EventHandler
+    fun onTNTMinecartPlaced(event: org.bukkit.event.entity.EntityPlaceEvent) {
+        val player = event.player ?: return
+        val vehicle = event.entity
+        if (vehicle !is ExplosiveMinecart) return
+        vehicle.persistentDataContainer.set(NamespacedKey(plugin, "placer"), PersistentDataType.STRING, player.uniqueId.toString())
+        }
+    }
+    
+    
+    /**
+     * Handle damage from TNT and TNT minecarts
+     */
+    @EventHandler
+    fun onExplosionDamage(event: EntityDamageByEntityEvent) {
+        if (event.cause != DamageCause.ENTITY_EXPLOSION) return
+        val victim = event.entity as? Player ?: return
+        // Check if the damage source is TNT or TNT minecart
+        val damageSource = event.damageSource.directEntity
+        if (damageSource !is TNTPrimed && damageSource !is ExplosiveMinecart) return
+        // Get the player who placed/ignited the TNT
+        val attacker = tntOwners[damageSource]
+        // If we couldn't determine who placed the TNT, allow the damage
+        if (attacker == null) return
+        // Check if PvP is valid between these players
+        if (isPvpValid(attacker, victim)) return
+        // Cancel the damage and send a message
+        event.isCancelled = true
+        val message = plugin.messageManager.getMessage(
+            "explosion_pvp_disabled", 
+            mapOf("%player%" to victim.name)
+        )
+        attacker.sendMessage(message)
     }
 }
