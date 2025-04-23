@@ -3,7 +3,7 @@
 A lightweight Minecraft plugin that allows players to toggle their PvP status on and off. Players can only engage in PvP when both parties have PvP enabled.
 
 ![ZPvPToggle](https://img.shields.io/badge/Minecraft-PvP%20Toggle-red)
-![API Version](https://img.shields.io/badge/API-1.20-blue)
+![API Version](https://img.shields.io/badge/API-1.21-blue)
 ![Folia Support](https://img.shields.io/badge/Folia-Supported-green)
 
 ## Features
