@@ -15,7 +15,7 @@ A lightweight Minecraft plugin that allows players to toggle their PvP status on
 - **Fully Customizable**: All messages and particle effects can be configured
 - **Folia Support**: Works with Folia server software
 - **Permissions-Based**: Granular permission system for different commands
-- MariaDB and SQLite supported.
+- **MariaDB and SQLite supported.**
 
 ## Commands
 
