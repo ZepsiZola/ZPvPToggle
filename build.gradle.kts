@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "zepsizola.me"
-version = "1.2"
+version = "1.3"
 
 repositories {
     mavenCentral()
@@ -21,11 +21,15 @@ repositories {
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
     compileOnly(kotlin("stdlib"))
+    
+    // bStats - this will be included in the JAR
     implementation("org.bstats:bstats-bukkit:3.0.2")
     
-    // Database dependencies
-    implementation("org.xerial:sqlite-jdbc:3.43.0.0")
-    implementation("mysql:mysql-connector-java:8.0.33")
+    // HikariCP for database connection pooling - will be included in the JAR
+    implementation("com.zaxxer:HikariCP:4.0.3")
+    
+    // Database dependencies - using compileOnly to avoid bundling them
+    compileOnly("org.xerial:sqlite-jdbc:3.43.0.0")
 }
 
 val targetJavaVersion = 21 // Set to 17 based on Gradle compatibility
@@ -40,7 +44,6 @@ tasks {
     }
 
     shadowJar {
-        // Fix the relocation path to match your actual package structure
         relocate("org.bstats", "zepsizola.me.zPvPToggle.bstats")
         archiveVersion.set(project.version.toString())
         archiveClassifier.set("")

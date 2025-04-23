@@ -16,6 +16,13 @@ database:
     database: minecraft
     username: root
     password: ""
+    # HikariCP connection pool settings
+    pool:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      idle-timeout: 30000
+      max-lifetime: 1800000
+      connection-timeout: 10000
 
 particle-indicator:
   # Interval in ticks to show the ring of particles. 20 ticks = 1 second.

@@ -63,6 +63,7 @@ interface DatabaseManager {
                     val username = plugin.config.getString("database.mariadb.username", "root")
                     val password = plugin.config.getString("database.mariadb.password", "")
                     
+                    // Create MariaDB connection with HikariCP
                     MariaDB(plugin, host!!, port, database!!, username!!, password!!)
                 } else {
                     SQLite(plugin)

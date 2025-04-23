@@ -1,5 +1,7 @@
 package zepsizola.me.zPvPToggle.data
 
+import com.zaxxer.hikari.HikariConfig
+import com.zaxxer.hikari.HikariDataSource
 import org.bukkit.plugin.java.JavaPlugin
 import zepsizola.me.zPvPToggle.ZPvPToggle
 import java.sql.Connection
@@ -11,7 +13,7 @@ import java.util.UUID
 import java.util.logging.Level
 
 /**
- * MariaDB/MySQL implementation of the DatabaseManager interface
+ * MariaDB/MySQL implementation of the DatabaseManager interface using HikariCP
  */
 class MariaDB(
     private val plugin: ZPvPToggle,
@@ -21,33 +23,76 @@ class MariaDB(
     private val username: String,
     private val password: String
 ) : DatabaseManager {
-    private var connection: Connection? = null
-    private val url = "jdbc:mysql://$host:$port/$database"
+    private var dataSource: HikariDataSource? = null
+    private val jdbcUrl = "jdbc:mysql://$host:$port/$database"
     
     override fun initialize() {
         try {
-            // Load MySQL JDBC driver
-            Class.forName("com.mysql.jdbc.Driver")
+            // Try to load MySQL JDBC driver
+            try {
+                // Try the newer driver class first
+                Class.forName("com.mysql.cj.jdbc.Driver")
+            } catch (e: ClassNotFoundException) {
+                // Fall back to older driver class
+                Class.forName("com.mysql.jdbc.Driver")
+            }
             
-            // Create connection
-            connection = DriverManager.getConnection(url, username, password)
+            // Configure HikariCP
+            val config = HikariConfig()
+            config.jdbcUrl = jdbcUrl
+            config.username = username
+            config.password = password
+            config.maximumPoolSize = 10
+            config.minimumIdle = 2
+            config.idleTimeout = 30000 // 30 seconds
+            config.maxLifetime = 1800000 // 30 minutes
+            config.connectionTimeout = 10000 // 10 seconds
+            config.poolName = "ZPvPToggle-HikariCP"
+            
+            // Add MySQL specific properties
+            config.addDataSourceProperty("cachePrepStmts", "true")
+            config.addDataSourceProperty("prepStmtCacheSize", "250")
+            config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048")
+            config.addDataSourceProperty("useServerPrepStmts", "true")
+            config.addDataSourceProperty("useLocalSessionState", "true")
+            config.addDataSourceProperty("rewriteBatchedStatements", "true")
+            config.addDataSourceProperty("cacheResultSetMetadata", "true")
+            config.addDataSourceProperty("cacheServerConfiguration", "true")
+            config.addDataSourceProperty("elideSetAutoCommits", "true")
+            config.addDataSourceProperty("maintainTimeStats", "false")
+            
+            // Create the data source
+            dataSource = HikariDataSource(config)
             
             // Create tables if they don't exist
-            createTables()
+            getConnection()?.use { conn ->
+                createTables(conn)
+            }
             
-            plugin.logger.info("MariaDB database connection established.")
+            plugin.logger.info("MariaDB database connection pool established with HikariCP.")
+        } catch (e: ClassNotFoundException) {
+            plugin.logger.log(Level.SEVERE, "MySQL JDBC driver not found. Please ensure the MySQL connector is installed on your server.", e)
+            throw e
         } catch (e: Exception) {
-            plugin.logger.log(Level.SEVERE, "Failed to initialize MariaDB database", e)
+            plugin.logger.log(Level.SEVERE, "Failed to initialize MariaDB database with HikariCP", e)
             throw e
         }
     }
     
     override fun close() {
         try {
-            connection?.close()
+            dataSource?.close()
+            plugin.logger.info("MariaDB connection pool closed.")
         } catch (e: SQLException) {
-            plugin.logger.log(Level.WARNING, "Error closing MariaDB connection", e)
+            plugin.logger.log(Level.WARNING, "Error closing MariaDB connection pool", e)
         }
+    }
+    
+    /**
+     * Get a connection from the pool
+     */
+    private fun getConnection(): Connection? {
+        return dataSource?.connection
     }
     
     override fun loadPlayerData(uuid: UUID): Map<String, Any> {
@@ -55,7 +100,7 @@ class MariaDB(
         val sql = "SELECT indicator_id, can_see_indicators, can_see_own_indicator FROM player_preferences WHERE uuid = ?"
         
         try {
-            connection?.prepareStatement(sql)?.use { stmt ->
+            getConnection()?.prepareStatement(sql)?.use { stmt ->
                 stmt.setString(1, uuid.toString())
                 val rs = stmt.executeQuery()
                 
@@ -84,7 +129,7 @@ class MariaDB(
         """
         
         try {
-            connection?.prepareStatement(sql)?.use { stmt ->
+            getConnection()?.prepareStatement(sql)?.use { stmt ->
                 stmt.setString(1, uuid.toString())
                 stmt.setString(2, indicatorId)
                 stmt.setString(3, indicatorId)
@@ -103,7 +148,7 @@ class MariaDB(
         """
         
         try {
-            connection?.prepareStatement(sql)?.use { stmt ->
+            getConnection()?.prepareStatement(sql)?.use { stmt ->
                 stmt.setString(1, uuid.toString())
                 stmt.setBoolean(2, canSeeIndicators)
                 stmt.setBoolean(3, canSeeIndicators)
@@ -122,7 +167,7 @@ class MariaDB(
         """
         
         try {
-            connection?.prepareStatement(sql)?.use { stmt ->
+            getConnection()?.prepareStatement(sql)?.use { stmt ->
                 stmt.setString(1, uuid.toString())
                 stmt.setBoolean(2, canSeeOwnIndicator)
                 stmt.setBoolean(3, canSeeOwnIndicator)
@@ -133,7 +178,7 @@ class MariaDB(
         }
     }
     
-    private fun createTables() {
+    private fun createTables(connection: Connection) {
         val sql = """
             CREATE TABLE IF NOT EXISTS player_preferences (
                 uuid VARCHAR(36) PRIMARY KEY,
@@ -144,7 +189,7 @@ class MariaDB(
         """
         
         try {
-            connection?.createStatement()?.use { stmt ->
+            connection.createStatement().use { stmt ->
                 stmt.execute(sql)
             }
         } catch (e: SQLException) {
