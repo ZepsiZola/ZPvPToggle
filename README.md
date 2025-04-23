@@ -15,6 +15,7 @@ A lightweight Minecraft plugin that allows players to toggle their PvP status on
 - **Fully Customizable**: All messages and particle effects can be configured
 - **Folia Support**: Works with Folia server software
 - **Permissions-Based**: Granular permission system for different commands
+- MariaDB and SQLite supported.
 
 ## Commands
 
@@ -35,9 +36,9 @@ A lightweight Minecraft plugin that allows players to toggle their PvP status on
 
 | Permission | Description | Default |
 |------------|-------------|---------|
-| zpvptoggle.user | Allows players to toggle their own PvP status | true |
-| zpvptoggle.indicator.<indicator> | Give access to specific indicators. | multiple |
-| zpvptoggle.admin | Allows staff to toggle PvP status for other players | op |
+| `zpvptoggle.user` | Allows players to toggle their own PvP status | true |
+| `zpvptoggle.indicator.<indicator>` | Give access to specific indicators. | multiple |
+| `zpvptoggle.admin` | Allows staff to toggle PvP status for other players | op |
 
 ## Configuration
 
@@ -48,17 +49,29 @@ disable-pvp-on-death: true
 # Whether to show a warning message when a player first toggles PvP
 warning-message-enabled: true
 
+# Database configuration
+database:
+  # Whether to use MariaDB/MySQL instead of SQLite
+  use-mariadb: false
+  # MariaDB/MySQL connection settings (only used if use-mariadb is true)
+  mariadb:
+    host: localhost
+    port: 3306
+    database: minecraft
+    username: root
+    password: ""
+
 particle-indicator:
-  # Interval in ticks to update PvP indicator status (different from interval in per-indicator settings)
-  interval-ticks: 20
+  # Interval in ticks to show the ring of particles. 20 ticks = 1 second.
+  interval-ticks: 60
   # Maximum distance (in blocks) at which players can see PvP indicators.
   max-view-distance: 32
   # The default indicator to use (must match one of the keys in the indicators section)
-  default-indicator: red-ring
+  default-indicator: default
   # Define multiple particle ring indicators
   indicators:
     # Default ring - red circle around feet
-    red-ring: 
+    default: 
       type: REDSTONE
       points: 32
       random-particle-positions: false
