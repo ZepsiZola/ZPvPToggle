@@ -4,7 +4,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import zepsizola.me.zPvPToggle.ZPvPToggle
 import zepsizola.me.zPvPToggle.commands.SubCommand
-import zepsizola.me.zPvPToggle.models.ParticleRingManager
+import zepsizola.me.zPvPToggle.indicator.ParticleRingManager
 
 class IndicatorCommand : SubCommand {
     override val name = "indicator"

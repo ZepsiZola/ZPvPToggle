@@ -1,4 +1,4 @@
-package zepsizola.me.zPvPToggle.tasks
+package zepsizola.me.zPvPToggle.indicator
 
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import org.bukkit.Color
@@ -11,8 +11,8 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
 import java.util.concurrent.TimeUnit.MILLISECONDS
-import zepsizola.me.zPvPToggle.models.ParticleRingManager
-import zepsizola.me.zPvPToggle.models.ParticleRingSettings
+import zepsizola.me.zPvPToggle.indicator.ParticleRingManager
+import zepsizola.me.zPvPToggle.indicator.ParticleRingSettings
 
 object ParticleIndicatorTask {
 

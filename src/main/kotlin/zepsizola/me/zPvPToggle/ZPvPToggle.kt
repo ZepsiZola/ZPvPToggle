@@ -6,7 +6,7 @@ import zepsizola.me.zPvPToggle.data.DatabaseManagerImpl
 import zepsizola.me.zPvPToggle.listeners.PvpListener
 import zepsizola.me.zPvPToggle.managers.MessageManager
 import zepsizola.me.zPvPToggle.managers.PvpManager
-import zepsizola.me.zPvPToggle.tasks.ParticleIndicatorTask
+import zepsizola.me.zPvPToggle.indicator.ParticleIndicatorTask
 import org.bstats.bukkit.Metrics
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener

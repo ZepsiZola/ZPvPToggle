@@ -16,7 +16,7 @@ import java.util.logging.Level
  */
 class SQLite(private val plugin: ZPvPToggle) : DatabaseManager {
     private var connection: Connection? = null
-    private val dbFile: File = File(plugin.dataFolder, "player_data.db")
+    private val dbFile: File = File(plugin.dataFolder, "playerdata.db")
     
     override fun initialize() {
         try {

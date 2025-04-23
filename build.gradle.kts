@@ -45,6 +45,7 @@ tasks {
 
     shadowJar {
         relocate("org.bstats", "zepsizola.me.zPvPToggle.bstats")
+        relocate("com.zaxxer.hikari", "zepsizola.me.zPvPToggle.libs.hikari")
         archiveVersion.set(project.version.toString())
         archiveClassifier.set("")
         minimize()

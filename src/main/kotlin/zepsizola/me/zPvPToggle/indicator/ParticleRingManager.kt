@@ -1,4 +1,4 @@
-package zepsizola.me.zPvPToggle.models
+package zepsizola.me.zPvPToggle.indicator
 
 import org.bukkit.Color
 import org.bukkit.Particle
