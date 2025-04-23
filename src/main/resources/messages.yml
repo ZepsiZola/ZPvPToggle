@@ -15,10 +15,6 @@ attack_pvp_disabled: "%prefix% <white>You cannot attack <red>%player%<white>. Bo
 
 explosion_pvp_disabled: "%prefix% <white>Your explosion cannot damage <red>%player%<white>. Both players must have PvP enabled."
 
-show_indicators: "%prefix% <white>PvP indicators now <red>shown<white> to you."
-
-hide_indicators: "%prefix% <white>PvP indicators now <red>hidden<white> from you."
-
 invalid_command: "%error_prefix% <white>Do <red>/pvp help</red> <white>for a list of valid commands."
 
 indicator:
@@ -27,6 +23,10 @@ indicator:
   not_found: "%error_prefix% <white>Indicator style '<red>%indicator%</red>' not found. Use <red>/pvp ring</red> to see available styles.</white>"
   no_permission: "%error_prefix% <red>You don't have permission to use the '%indicator%' indicator.</red>"
   set_success: "%prefix% <white>PvP indicator set to <red>%indicator%</red>.</white>"
+  show: "%prefix% <white>PvP indicators now <red>shown<white> to you."
+  hide: "%prefix% <white>PvP indicators now <red>hidden<white> from you."
+  show_own: "%prefix% <white>Your own PvP indicator now <red>shown<white> to you."
+  hide_own: "%prefix% <white>Your own PvP indicator now <red>hidden<white> from you."
 
 help_message: |
 
@@ -35,8 +35,8 @@ help_message: |
   <red>/pvp toggle <gray>-<white> Toggle PvP status
   <red>/pvp on <gray>-<white> Enable PvP
   <red>/pvp off <gray>-<white> Disable PvP
-  <red>/pvp hide <gray>-<white> Hide PvP particle indicators
-  <red>/pvp show <gray>-<white> Show PvP particle indicators
+  <red>/pvp hide [--own] <gray>-<white> Hide PvP particle indicators
+  <red>/pvp show [--own] <gray>-<white> Show PvP particle indicators
   <red>/pvp help <gray>-<white> Display the help message
   <red>/pvp ring <gray>-<white> Change your PvP indicator style
   <red>/pvp reload <gray>-<white> Reload plugin configuration (Admin)

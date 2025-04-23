@@ -4,10 +4,13 @@ import org.bukkit.entity.Player
 import zepsizola.me.zPvPToggle.ZPvPToggle
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
+import zepsizola.me.zPvPToggle.data.DatabaseManager
+import zepsizola.me.zPvPToggle.data.DatabaseManagerImpl
 
 data class PlayerState(
     var pvpEnabled: Boolean = false,
     var canSeeIndicators: Boolean = true,  // Whether this player can see indicators of other players
+    var canSeeOwnIndicator: Boolean = true,  // Whether this player can see their own indicator
     var firstToggleOnThisSession: Boolean = true,
     var indicatorRingId: String = "default"  // The ID of the particle ring to use for this player
 )
@@ -19,12 +22,15 @@ class PvpManager(private val plugin: ZPvPToggle) {
     // Cache of players with PvP enabled
     private val pvpEnabledPlayers = ConcurrentHashMap<UUID, Player>()
     
+    lateinit var databaseManager: DatabaseManagerImpl
+
     init {
         // Register event listeners for player join/quit to manage the cache
         plugin.server.pluginManager.registerEvents(object : org.bukkit.event.Listener {
             @org.bukkit.event.EventHandler
             fun onPlayerJoin(event: org.bukkit.event.player.PlayerJoinEvent) {
                 val player = event.player
+                databaseManager.loadPlayerData(event.player)
                 if (getState(player).pvpEnabled) {
                     pvpEnabledPlayers[player.uniqueId] = player
                 }
@@ -36,6 +42,8 @@ class PvpManager(private val plugin: ZPvPToggle) {
                 removePlayerData(event.player.uniqueId)
             }
         }, plugin)
+
+        databaseManager = DatabaseManagerImpl(plugin)
     }
 
     fun getState(player: Player): PlayerState {
@@ -44,8 +52,9 @@ class PvpManager(private val plugin: ZPvPToggle) {
 
     fun togglePvp(player: Player): Boolean {
         val state = getState(player)
-        state.pvpEnabled = !state.pvpEnabled
-        updatePvpEnabledCache(player, state.pvpEnabled)
+        setPvp(player, !state.pvpEnabled)
+        // state.pvpEnabled = !state.pvpEnabled
+        // updatePvpEnabledCache(player, state.pvpEnabled)
         return state.pvpEnabled
     }
 
@@ -62,10 +71,25 @@ class PvpManager(private val plugin: ZPvPToggle) {
     fun toggleIndicators(player: Player): Boolean {
         val state = getState(player)
         state.canSeeIndicators = !state.canSeeIndicators
+        databaseManager.savePlayerIndicatorVisibility(player, state.canSeeIndicators)
         return state.canSeeIndicators
     }
+
     fun canSeeIndicators(player: Player): Boolean {
-        return getState(player).canSeeIndicators
+        val state = getState(player)
+        return state.canSeeIndicators
+    }
+
+    fun toggleOwnIndicator(player: Player): Boolean {
+        val state = getState(player)
+        state.canSeeOwnIndicator = !state.canSeeOwnIndicator
+        databaseManager.savePlayerOwnIndicatorVisibility(player, state.canSeeOwnIndicator)
+        return state.canSeeOwnIndicator
+    }
+
+    fun canSeeOwnIndicator(player: Player): Boolean {
+        val state = getState(player)
+        return state.canSeeOwnIndicator
     }
     
     /**
@@ -73,9 +97,10 @@ class PvpManager(private val plugin: ZPvPToggle) {
      * @param player The player to set the ring for
      * @param ringId The ID of the ring to use
      */
-    fun setIndicatorRing(player: Player, ringId: String) {
+    fun setIndicatorRing(player: Player, indicatorId: String) {
         val state = getState(player)
-        state.indicatorRingId = ringId
+        databaseManager.savePlayerIndicator(player , indicatorId)
+        state.indicatorRingId = indicatorId
     }
     
     /**
@@ -132,5 +157,16 @@ class PvpManager(private val plugin: ZPvPToggle) {
                 pvpEnabledPlayers[player.uniqueId] = player
             }
         }
+    }
+
+    fun stop() {
+        // // Save all player data to the database
+        // for ((uuid, state) in playerStates) {
+        //     databaseManager.savePlayerIndicator(uuid, state.indicatorRingId)
+        //     databaseManager.savePlayerIndicatorVisibility(uuid, state.canSeeIndicators)
+        //     databaseManager.savePlayerOwnIndicatorVisibility(uuid, state.canSeeOwnIndicator)
+        // }
+        // Close the database connection
+        databaseManager.close()
     }
 }

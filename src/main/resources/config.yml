@@ -1,10 +1,23 @@
 # Whether to disable PvP when a player dies
 disable-pvp-on-death: true
+# Whether to show a warning message when a player first toggles PvP
 warning-message-enabled: true
+
+# Database configuration
+database:
+  # Whether to use MariaDB/MySQL instead of SQLite
+  use-mariadb: false
+  # MariaDB/MySQL connection settings (only used if use-mariadb is true)
+  mariadb:
+    host: localhost
+    port: 3306
+    database: minecraft
+    username: root
+    password: ""
 
 particle-indicator:
   # Interval in ticks to show the ring of particles. 20 ticks = 1 second.
-  interval-ticks: 20
+  interval-ticks: 60
   # Maximum distance (in blocks) at which players can see PvP indicators.
   max-view-distance: 32
   # The default indicator to use (must match one of the keys in the indicators section)
@@ -40,10 +53,10 @@ particle-indicator:
     
     angry: 
       type: TRIAL_SPAWNER_DETECTION
-      points: 3
+      points: 4
       random-particle-positions: true
-      radius: 0.2
-      interval: 1
+      radius: 0.1
+      interval: 2
       y-offset: 2.5
       random-offset-vertical: 0.0
       random-offset-horizontal: 0.1
@@ -62,17 +75,17 @@ particle-indicator:
 
     gradient:
       type: DUST_COLOR_TRANSITION
-      points: 32
-      random-particle-positions: false
-      radius: 0.8
-      interval: 20
-      y-offset: 0.9
-      random-offset-vertical: 0.5
-      random-offset-horizontal: 0.1
-      speed: 0.00
-      from-color: YELLOW
-      to-color: FUCHSIA
-      dust-size: 1.0
+      points: 2
+      random-particle-positions: true
+      radius: 0.4
+      interval: 2
+      y-offset: 0.2
+      random-offset-vertical: 0.1
+      random-offset-horizontal: 0.2
+      speed: 0.0
+      from-color: '#ff0000'
+      to-color: '#1a1515'
+      dust-size: 2.0
       
     barrier:
       type: BLOCK_MARKER
@@ -88,14 +101,14 @@ particle-indicator:
       
     slime:
       type: DUST_PILLAR
-      points: 2
+      points: 6
       random-particle-positions: true
-      radius: 0.7
+      radius: 1.1
       interval: 2
-      y-offset: 0.3
+      y-offset: -0.2
       random-offset-vertical: 0.3
       random-offset-horizontal: 0.3
-      speed: 0.03
+      speed: 0.1
       block-data: SLIME_BLOCK
 
     snow:

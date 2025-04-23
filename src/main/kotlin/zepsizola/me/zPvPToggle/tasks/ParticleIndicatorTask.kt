@@ -66,8 +66,10 @@ object ParticleIndicatorTask {
                 plugin.server.regionScheduler.run(plugin, location, Consumer {_: ScheduledTask ->
                     // For each observer who can see indicators
                     for (observer in location.getNearbyPlayers(maxDistance)) {
+                        val observerState = plugin.pvpManager.getState(observer)
                         // Skip if observer can't see indicators
-                        if (!plugin.pvpManager.getState(observer).canSeeIndicators) continue
+                        if (!observerState.canSeeIndicators || (observer == pvpPlayer && !observerState.canSeeOwnIndicator)) continue
+                        // if (observer == pvpPlayer && !playerState.canSeeOwnIndicator) continue // Skip if observer is the player themselves
                         
                         // Schedule an immediate task for the observer to see the ring
                         // var curr = 0
