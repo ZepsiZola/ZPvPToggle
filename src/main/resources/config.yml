@@ -1,3 +1,5 @@
+config-version: 1 # Do not change or delete this.
+
 # Whether to disable PvP when a player dies
 disable-pvp-on-death: true
 # Whether to show a warning message when a player first toggles PvP
