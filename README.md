@@ -10,6 +10,7 @@ A lightweight Minecraft plugin that allows players to toggle their PvP status on
 
 - **Toggle PvP**: Players can enable or disable their PvP status
 - **Visual Indicators**: Customizable particle rings show which players have PvP enabled
+- **Cooldowns:** Configurable cooldown for toggling PvP after a player enters PvP combat.
 - **Custom Indicators:** Players can choose their own indicators. Access to indicators is permission-based.
 - **Admin Controls**: Staff can toggle PvP for other players
 - **Fully Customizable**: All messages and particle effects can be configured
