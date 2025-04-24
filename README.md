@@ -92,9 +92,9 @@ particle-indicator:
 
 ## Compatibility
 
-- Paper 1.20.1 -> 1.21.4
+- Paper 1.21+
 - Folia-compatible
-- Java 17+
+- Java 21+
 
 ## Dependencies
 
