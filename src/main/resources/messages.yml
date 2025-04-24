@@ -2,20 +2,28 @@ prefix: "<red>ZPvPToggle <dark_red>»</dark_red>"
 error_prefix: "<bold><red>ERROR <dark_red>»</dark_red></bold>"
 
 pvp_enabled: "%prefix% <white>PvP enabled."
-
 pvp_disabled: "%prefix% <white>PvP disabled."
 
-pvp_enabled_other: "%prefix% <white>PvP enabled for %player%."
+pvp_cooldown: "%prefix% <white>Cannot toggle PvP for another <red>%cooldown%</red>.</white>"
 
+pvp_enabled_other: "%prefix% <white>PvP enabled for %player%."
 pvp_disabled_other: "%prefix% <white>PvP disabled for %player%."
 
 pvp_disabled_on_death: "%prefix% <white>Your PvP has been disabled because you died."
 
-attack_pvp_disabled: "%prefix% <white>You cannot attack <red>%player%<white>. Both players must have PvP enabled."
-
-explosion_pvp_disabled: "%prefix% <white>Your explosion cannot damage <red>%player%<white>. Both players must have PvP enabled."
-
 invalid_command: "%error_prefix% <white>Do <red>/pvp help</red> <white>for a list of valid commands."
+
+attack_pvp_disabled:
+  player: "%prefix% <white>You cannot attack <red>%player%<white>. Both players must have PvP enabled."
+  pet: "%prefix% <white>You cannot attack <red>%player%'s pet<white>. Both players must have PvP enabled."
+
+potion_pvp_disabled:
+  player: "%prefix% <white>Your harmful potion cannot affect <red>%player%<white>. Both players must have PvP enabled."
+  pet: "%prefix% <white>Your harmful potion cannot affect <red>%player%'s pet<white>. Both players must have PvP enabled."
+
+explosion_pvp_disabled:
+  player: "%prefix% <white>Your explosion cannot damage <red>%player%<white>. Both players must have PvP enabled."
+  pet: "%prefix% <white>Your explosion cannot damage <red>%player%'s pet<white>. Both players must have PvP enabled."
 
 indicator:
   available_styles: "%prefix% <white>Available indicator styles...</white>"

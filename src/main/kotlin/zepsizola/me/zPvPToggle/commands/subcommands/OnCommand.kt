@@ -43,9 +43,17 @@ class OnCommand : SubCommand {
             sender.sendMessage(messageManager.getMessage("player_only_command"))
             return true
         }
-        
+        if (pvpManager.hasCooldown(sender)) {
+            sender.sendMessage(
+                messageManager.getMessage(
+                    "pvp_cooldown",
+                    mapOf("%cooldown%" to pvpManager.getRemainingCooldownString(sender))
+                )
+            )
+            return true
+        }
         pvpManager.setPvp(sender, true)
-        
+        // sender.setCooldown()
         if (pvpManager.isFirstToggleOnThisSession(sender) && plugin.warningMessageEnabled) {
             sender.sendMessage(messageManager.getMessage("warning_message"))
         }

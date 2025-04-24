@@ -20,6 +20,8 @@ class ZPvPToggle : JavaPlugin() {
     // lateinit var databaseManager: DatabaseManagerImpl
     var disablePvpOnDeath = true
     var warningMessageEnabled = true
+    var protectPets = true
+    var pvpCooldown = 5.0
 
     override fun onEnable() {
         // Save default config and messages.yml if they don't exist
@@ -82,6 +84,8 @@ class ZPvPToggle : JavaPlugin() {
         reloadConfig()
         disablePvpOnDeath = config.getBoolean("disable-pvp-on-death", true)
         warningMessageEnabled = config.getBoolean("warning-message-enabled", true)
+        protectPets = config.getBoolean("protect-pets", true)
+        pvpCooldown = config.getDouble("pvp-cooldown", 5.0)
         
         // Reload messages
         messageManager.reload()

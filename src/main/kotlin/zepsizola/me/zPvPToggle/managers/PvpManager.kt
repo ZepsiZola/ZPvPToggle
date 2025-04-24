@@ -6,13 +6,15 @@ import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import zepsizola.me.zPvPToggle.data.DatabaseManager
 import zepsizola.me.zPvPToggle.data.DatabaseManagerImpl
+import java.util.concurrent.TimeUnit
 
 data class PlayerState(
     var pvpEnabled: Boolean = false,
     var canSeeIndicators: Boolean = true,  // Whether this player can see indicators of other players
     var canSeeOwnIndicator: Boolean = true,  // Whether this player can see their own indicator
     var firstToggleOnThisSession: Boolean = true,
-    var indicatorRingId: String = "default"  // The ID of the particle ring to use for this player
+    var indicatorRingId: String = "default",  // The ID of the particle ring to use for this player
+    var pvpCooldown: Long = 0  // The cooldown time for toggling PvP
 )
 
 class PvpManager(private val plugin: ZPvPToggle) {
@@ -169,4 +171,80 @@ class PvpManager(private val plugin: ZPvPToggle) {
         // Close the database connection
         databaseManager.close()
     }
+
+    /**
+     * Sets a cooldown for a player toggling PvP
+     * @param player the player to set the cooldown for
+     * @param durationSeconds the cooldown duration in seconds
+     */
+    fun setCooldown(player: Player, durationSeconds: Double = plugin.pvpCooldown) {
+        if (durationSeconds <= 0) return
+        val state = getState(player)
+        state.pvpCooldown = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(durationSeconds.toLong())
+    }
+
+    /**
+     * Checks if a player has a cooldown
+     * @return true if the player has a cooldown, false otherwise
+     */
+    fun hasCooldown(player: Player): Boolean {
+        // Check if player has bypass permission
+        if (player.hasPermission("zpvptoggle.cooldown.bypass")) {
+            return false
+        }
+        val state = getState(player)
+        return state.pvpCooldown > System.currentTimeMillis()
+    }
+    
+    /**
+     * Gets the remaining cooldown time for a player
+     * @return the remaining cooldown time in milliseconds, or 0 if no cooldown
+     */
+    fun getRemainingCooldown(player: Player): Long {
+        val state = getState(player)
+        val remaining = state.pvpCooldown - System.currentTimeMillis()
+        return if (remaining > 0) remaining else 0
+    }
+    
+    /**
+     * Gets the remaining cooldown time for a player
+     * @return the remaining cooldown time formatted as a string
+     */
+    fun getRemainingCooldownString(player: Player): String {
+        return formatCooldownTime(getRemainingCooldown(player))
+    }
+    
+    /**
+     * Formats a cooldown time in a human-readable format
+     * @param timeMillis the time in milliseconds
+     * @return a formatted string like "1m 30s"
+     */
+    fun formatCooldownTime(timeMillis: Long): String {
+        val seconds = timeMillis / 1000
+        
+        if (seconds < 60) {
+            return "${seconds}s"
+        }
+        
+        val minutes = seconds / 60
+        val remainingSeconds = seconds % 60
+        
+        if (minutes < 60) {
+            return if (remainingSeconds > 0) {
+                "${minutes}m ${remainingSeconds}s"
+            } else {
+                "${minutes}m"
+            }
+        }
+        
+        val hours = minutes / 60
+        val remainingMinutes = minutes % 60
+        
+        return if (remainingMinutes > 0) {
+            "${hours}h ${remainingMinutes}m"
+        } else {
+            "${hours}h"
+        }
+    }
+
 }

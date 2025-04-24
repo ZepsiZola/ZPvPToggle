@@ -2,6 +2,8 @@ package zepsizola.me.zPvPToggle.listeners
 
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
+import org.bukkit.entity.Tameable
+import org.bukkit.entity.LivingEntity
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDamageByEntityEvent
@@ -28,9 +30,12 @@ import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType.Category
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.Material
+import org.bukkit.Server
+import org.bukkit.Bukkit
 import org.bukkit.event.block.Action
 import org.bukkit.block.data.BlockData
 import java.util.function.Consumer
+import java.util.function.Predicate
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import io.papermc.paper.threadedregions.scheduler.RegionScheduler
 import org.bukkit.entity.TNTPrimed
@@ -42,8 +47,8 @@ import org.bukkit.entity.Entity
 class PvpListener(private val plugin: ZPvPToggle) : Listener {
 
     private val attackerKey: NamespacedKey = NamespacedKey(plugin, "attacker")
-    private val lastRespawnAnchorInteraction = java.util.concurrent.ConcurrentHashMap<Player, Collection<Player>>()
-    private val lastBedInteraction = java.util.concurrent.ConcurrentHashMap<Player, Collection<Player>>()
+    private val lastRespawnAnchorInteraction = java.util.concurrent.ConcurrentHashMap<Player, Collection<LivingEntity>>()
+    private val lastBedInteraction = java.util.concurrent.ConcurrentHashMap<Player, Collection<LivingEntity>>()
     private val tntOwners = java.util.concurrent.ConcurrentHashMap<Entity, Player>()
 
     /**
@@ -52,13 +57,21 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
      * @param victim The player who is being attacked.
      * @return true if PvP is valid, false otherwise.
      */
-    fun isPvpValid(attacker: Player?, victim: Player?): Boolean {
+    fun isPvpValid(attacker: Entity?, victim: Entity?): Boolean {
         // plugin.logger.info("Checking PvP validity for attacker: ${attacker.name}, victim: ${victim.name}")
         if (attacker == null || victim == null) {
             return true
         }
-        val valid = ((plugin.pvpManager.isPvpEnabled(attacker) && plugin.pvpManager.isPvpEnabled(victim)) || (victim == attacker))
-        // plugin.logger.info("PvP validity: $valid")
+        if (victim is Tameable && !victim.ownerNearby()) return false
+        if (attacker is Tameable && !attacker.ownerNearby()) return false
+        val attackerPlayer = attacker.getPlayerOrPet() ?: return true
+        val victimPlayer = victim.getPlayerOrPet() ?: return true
+        val valid = ((plugin.pvpManager.isPvpEnabled(attackerPlayer) && plugin.pvpManager.isPvpEnabled(victimPlayer)) || (victimPlayer == attackerPlayer))
+        if (valid) {
+            plugin.pvpManager.setCooldown(attackerPlayer)
+            plugin.pvpManager.setCooldown(victimPlayer)
+        }
+        // plugin.logger.debug("PvP validity: $valid")
         return valid
     }
 
@@ -72,6 +85,22 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
         }
         return false
     }
+
+    private fun Entity.getPlayerOrPet(): Player? {
+        if (this is Player) return this
+        if (!plugin.protectPets) return null
+        return (this as? Tameable)?.owner as? Player ?: return null
+    }
+
+    /**
+     * Checks if a pet's owner is nearby
+     * @return true if the owner is nearby (of if pet has no owner), false otherwise.
+     */
+    private fun Tameable.ownerNearby(): Boolean {
+        if (!this.isTamed) return true
+        if (!plugin.protectPets) return true
+        return this.location.getNearbyPlayers(32.0).contains(this.owner)
+    }
     /**
      * Checks if a potion meta has negative effects
      * @param potionMeta The potion meta to check.
@@ -82,29 +111,32 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
         return false
     }
 
-    @EventHandler
-    fun onPlayerDamage(event: EntityDamageByEntityEvent) {
-        val victim = event.entity as? Player ?: return
-        val attacker = event.damageSource.causingEntity as? Player ?: return
-        if (isPvpValid(attacker, victim)) return
-        event.isCancelled = true
-        val message = plugin.messageManager.getMessage(
-            "attack_pvp_disabled", 
-            mapOf("%player%" to victim.name)
-        )
-        attacker.sendMessage(message)
+    private fun makeAndSendMessage(attacker: Entity, victim: Entity, yamlMessage: String) {
+        val message = when (victim) {
+            is Tameable -> plugin.messageManager.getMessage(
+                "$yamlMessage.pet", 
+                mapOf("%player%" to (Bukkit.getOfflinePlayer(victim.ownerUniqueId!!).name ?: "unknown"))
+            )
+            is Player -> plugin.messageManager.getMessage(
+                "$yamlMessage.player", 
+                mapOf("%player%" to victim.name)
+            )
+            else -> null
+        }
+        if (message != null) attacker.sendMessage(message)
     }
 
     @EventHandler
-    fun onPlayerPushed(event: EntityPushedByEntityAttackEvent) {
-        val victim = event.entity as? Player ?: return
-        val attacker = event.getPushedBy() as? Player ?: return
+    fun onplayerdamage(event: EntityDamageByEntityEvent) {
+        val victim = event.entity
+        val attacker = event.damageSource.causingEntity ?: return
         if (isPvpValid(attacker, victim)) return
         event.isCancelled = true
+        makeAndSendMessage(attacker, victim, "attack_pvp_disabled")
     }
 
     /*
-     * Add a affectedPlayers collection with the culprit Player as the key to the lastBedInteraction map when a player
+     * add a affectedplayers collection with the culprit player as the key to the lastbedinteraction map when a player
      *  initiates the bed explosion.
      * Then remove the entry from the lastBedInteraction map on the next tick.
      */
@@ -112,7 +144,9 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
     fun onPlayerInitiateBedExplosion(event: PlayerBedFailEnterEvent) {
         if (!event.willExplode) return
         val attacker = event.player
-        val affectedPlayers = event.bed.location.getNearbyPlayers(9.5)
+        val affectedPlayers = event.bed.location.getNearbyLivingEntities(9.5, Predicate<LivingEntity> { entity ->
+            entity is Player || entity is Tameable
+        })
         lastBedInteraction[attacker] = affectedPlayers
         plugin.server.regionScheduler.runDelayed(plugin, attacker.location, Consumer {_: ScheduledTask ->
             lastBedInteraction.remove(attacker)
@@ -132,7 +166,10 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
         if (event.material != Material.GLOWSTONE) return
         val player = event.player
         if (respawnAnchor.charges == (respawnAnchor.maximumCharges)) {
-            val affectedPlayers = block.location.getNearbyPlayers(9.5)
+            // val affectedPlayers = block.location.getNearbyEntities(9.5)
+            val affectedPlayers = block.location.getNearbyLivingEntities(9.5, Predicate<LivingEntity> { entity ->
+                entity is Player || entity is Tameable
+            })
             lastRespawnAnchorInteraction[player] = affectedPlayers
             plugin.server.regionScheduler.runDelayed(plugin, player.location, Consumer {_: ScheduledTask ->
                 lastRespawnAnchorInteraction.remove(player)
@@ -144,38 +181,30 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
     fun onBedExplodesPlayer(event: EntityDamageByBlockEvent) {
         if (event.cause != DamageCause.BLOCK_EXPLOSION) return
         if (event.damagerBlockState?.blockData !is org.bukkit.block.data.type.Bed) return
-        val victim = event.entity as? Player ?: return
+        val victim = event.entity
         var attacker: Player? = null
-        for ((player, affectedPlayers) in lastBedInteraction) {
-            if (!affectedPlayers.contains(victim)) continue
+        for ((player, affectedEntities) in lastBedInteraction) {
+            if (!affectedEntities.contains(victim)) continue
             attacker = player
         }
         if (isPvpValid(attacker, victim)) return
         event.isCancelled = true
-        val message = plugin.messageManager.getMessage(
-            "attack_pvp_disabled", 
-            mapOf("%player%" to victim.name)
-        )
-        attacker!!.sendMessage(message)
+        makeAndSendMessage((attacker as Entity), victim, "explosion_pvp_disabled")
     }
 
     @EventHandler
     fun onRespawnAnchorExplodesPlayer(event: EntityDamageByBlockEvent) {
         if (event.cause != DamageCause.BLOCK_EXPLOSION) return
         if (event.damagerBlockState?.blockData !is org.bukkit.block.data.type.RespawnAnchor) return
-        val victim = event.entity as? Player ?: return
+        val victim = event.entity
         var attacker: Player? = null
-        for ((player, affectedPlayers) in lastRespawnAnchorInteraction) {
-            if (!affectedPlayers.contains(victim)) continue
+        for ((player, affectedEntities) in lastRespawnAnchorInteraction) {
+            if (!affectedEntities.contains(victim)) continue
             attacker = player
         }
         if (isPvpValid(attacker, victim)) return
         event.isCancelled = true
-        val message = plugin.messageManager.getMessage(
-            "attack_pvp_disabled", 
-            mapOf("%player%" to victim.name)
-        )
-        attacker!!.sendMessage(message)
+        makeAndSendMessage((attacker as Entity), victim, "explosion_pvp_disabled")
         // val message = plugin.messageManager.getMessage(
         //     "bed_exploded", 
         //     mapOf("%player%" to victim.name)
@@ -188,15 +217,11 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
         val thrower = event.entity.shooter as? Player ?: return
         if (!isNegativePotion(event.potion.potionMeta)) return
         for (affectedEntity in event.affectedEntities) {
-            if (affectedEntity !is Player) continue
+            if (affectedEntity !is Player && affectedEntity !is Tameable) continue
             if (affectedEntity == thrower) continue
             if (isPvpValid(thrower, affectedEntity)) continue
             event.setIntensity(affectedEntity, 0.0)
-            val message = plugin.messageManager.getMessage(
-                "attack_pvp_disabled", 
-                mapOf("%player%" to affectedEntity.name)
-            )
-            thrower.sendMessage(message)
+            makeAndSendMessage(thrower, affectedEntity, "potion_pvp_disabled")
         }
     }
     
@@ -233,7 +258,7 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
         val thrower = plugin.server.getPlayer(uuid) ?: return
         val affectedEntities = ArrayList(event.affectedEntities)
         for (affectedEntity in affectedEntities) {
-            if (affectedEntity !is Player) continue
+            if (affectedEntity !is Player && affectedEntity !is Tameable) continue
             if (isPvpValid(thrower, affectedEntity)) continue
             event.affectedEntities.remove(affectedEntity)
             // val message = plugin.messageManager.getMessage(
@@ -310,7 +335,7 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
     @EventHandler
     fun onExplosionDamage(event: EntityDamageByEntityEvent) {
         if (event.cause != DamageCause.ENTITY_EXPLOSION) return
-        val victim = event.entity as? Player ?: return
+        val victim = event.entity
         // Check if the damage source is TNT or TNT minecart
         val damageSource = event.damageSource.directEntity
         if (damageSource !is TNTPrimed && damageSource !is ExplosiveMinecart) return
@@ -322,10 +347,6 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
         if (isPvpValid(attacker, victim)) return
         // Cancel the damage and send a message
         event.isCancelled = true
-        val message = plugin.messageManager.getMessage(
-            "explosion_pvp_disabled", 
-            mapOf("%player%" to victim.name)
-        )
-        attacker.sendMessage(message)
+        makeAndSendMessage(attacker, victim, "potion_pvp_disabled")
     }
 }

@@ -43,10 +43,18 @@ class OffCommand : SubCommand {
             sender.sendMessage(messageManager.getMessage("player_only_command"))
             return true
         }
-        
+        if (pvpManager.hasCooldown(sender)) {
+            sender.sendMessage(
+                messageManager.getMessage(
+                    "pvp_cooldown",
+                    mapOf("%cooldown%" to pvpManager.getRemainingCooldownString(sender))
+                )
+            )
+            return true
+        }
         pvpManager.setPvp(sender, false)
+        // sender.setCooldown()
         sender.sendMessage(messageManager.getMessage("pvp_disabled"))
-        
         return true
     }
     

@@ -4,6 +4,10 @@ config-version: 1 # Do not change or delete this.
 disable-pvp-on-death: true
 # Whether to show a warning message when a player first toggles PvP
 warning-message-enabled: true
+# Whether to apply pvp-toggle protections to pets of players too
+protect-pets: true
+# Duration of the cooldown for players toggling pvp or since their last pvp interaction
+pvp-cooldown: 10.0
 
 # Database configuration
 database:
@@ -122,13 +126,13 @@ particle-indicator:
 
     snow:
       type: FALLING_DUST
-      points: 2
+      points: 4
       random-particle-positions: true
-      radius: 0
+      radius: 1
       interval: 5
-      y-offset: 2
-      random-offset-vertical: 0.3
-      random-offset-horizontal: 0.6
+      y-offset: 2.4
+      random-offset-vertical: 0.4
+      random-offset-horizontal: 0.3
       speed: 0.001
       block-data: SNOW
       

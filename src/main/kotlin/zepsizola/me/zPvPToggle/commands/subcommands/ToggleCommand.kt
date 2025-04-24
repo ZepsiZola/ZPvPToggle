@@ -27,7 +27,6 @@ class ToggleCommand : SubCommand {
                 sender.sendMessage(messageManager.getMessage("player_not_found"))
                 return true
             }
-            
             val newState = pvpManager.togglePvp(targetPlayer)
             if (newState) {
                 targetPlayer.sendMessage(messageManager.getMessage("pvp_enabled"))
@@ -54,8 +53,17 @@ class ToggleCommand : SubCommand {
             sender.sendMessage(messageManager.getMessage("player_only_command"))
             return true
         }
-        
+        if (pvpManager.hasCooldown(sender)) {
+            sender.sendMessage(
+                messageManager.getMessage(
+                    "pvp_cooldown",
+                    mapOf("%cooldown%" to pvpManager.getRemainingCooldownString(sender))
+                )
+            )
+            return true
+        }
         val newState = pvpManager.togglePvp(sender)
+        // sender.setCooldown()
         if (newState) {
             if (pvpManager.isFirstToggleOnThisSession(sender) && plugin.warningMessageEnabled) {
                 sender.sendMessage(messageManager.getMessage("warning_message"))
