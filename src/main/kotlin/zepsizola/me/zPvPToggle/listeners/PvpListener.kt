@@ -127,7 +127,7 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
     }
 
     @EventHandler
-    fun onplayerdamage(event: EntityDamageByEntityEvent) {
+    fun onPlayerDamage(event: EntityDamageByEntityEvent) {
         val victim = event.entity
         val attacker = event.damageSource.causingEntity ?: return
         if (isPvpValid(attacker, victim)) return
