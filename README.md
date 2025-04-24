@@ -48,6 +48,10 @@ A lightweight Minecraft plugin that allows players to toggle their PvP status on
 disable-pvp-on-death: true
 # Whether to show a warning message when a player first toggles PvP
 warning-message-enabled: true
+# Whether to apply pvp-toggle protections to pets of players too
+protect-pets: true
+# Duration of the cooldown for players toggling pvp or since their last pvp interaction
+pvp-cooldown: 10.0
 
 # Database configuration
 database:
