@@ -135,6 +135,15 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
         makeAndSendMessage(attacker, victim, "attack_pvp_disabled")
     }
 
+    @EventHandler
+    fun onPlayerPushed(event: EntityPushedByEntityAttackEvent) {
+        val victim = event.entity
+        val attacker = event.pushedBy
+        if (isPvpValid(attacker, victim)) return
+        event.isCancelled = true
+        // makeAndSendMessage(attacker, victim, "attack_pvp_disabled")
+    }
+
     /*
      * add a affectedplayers collection with the culprit player as the key to the lastbedinteraction map when a player
      *  initiates the bed explosion.
@@ -205,11 +214,6 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
         if (isPvpValid(attacker, victim)) return
         event.isCancelled = true
         makeAndSendMessage((attacker as Entity), victim, "explosion_pvp_disabled")
-        // val message = plugin.messageManager.getMessage(
-        //     "bed_exploded", 
-        //     mapOf("%player%" to victim.name)
-        // )
-        // attacker.sendMessage(message)
     }
 
     @EventHandler
@@ -261,11 +265,6 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
             if (affectedEntity !is Player && affectedEntity !is Tameable) continue
             if (isPvpValid(thrower, affectedEntity)) continue
             event.affectedEntities.remove(affectedEntity)
-            // val message = plugin.messageManager.getMessage(
-            //     "attack_pvp_disabled", 
-            //     mapOf("%player%" to affectedEntity.name)
-            // )
-            // thrower.sendMessage(message)
         }
     }
 

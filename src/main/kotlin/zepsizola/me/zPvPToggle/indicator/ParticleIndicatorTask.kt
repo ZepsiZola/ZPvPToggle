@@ -119,49 +119,4 @@ object ParticleIndicatorTask {
             }
         }, null, ring.interval, ring.interval)
     }
-
-    // private fun reloadParticleRing(plugin: ZPvPToggle) {
-    //     val section = plugin.config.getConfigurationSection("particle-indicator") ?: return
-    //
-    //     // Safely get config values, fallback to defaults
-    //     typeName = section.getString("type", "REDSTONE")?.uppercase() ?: "REDSTONE"
-    //     radius = section.getDouble("radius", 0.7)
-    //     points = section.getInt("points", 32)
-    //     yOffset = section.getDouble("y-offset", 0.1)
-    //
-    //     particleType = try {
-    //         Particle.valueOf(typeName)
-    //     } catch (_: IllegalArgumentException) {
-    //         Particle.valueOf("REDSTONE")
-    //     }
-    //
-    //     // If using REDSTONE, parse color and size from config
-    //     // dustOptions = if (particleType == Particle.valueOf("REDSTONE")) {
-    //     val colorName = section.getString("color", "RED")?.uppercase() ?: "RED"
-    //     val dustSize = section.getDouble("dust-size", 1.0)
-    //     val bukkitColor = colorFromString(colorName) ?: Color.RED
-    //     dustOptions = Particle.DustOptions(bukkitColor, dustSize.toFloat())
-    //     // } else null
-    // }
-
-    // private fun showParticleRing(player: Player, observer: Player, ring: ParticleRingSettings) {
-    //     val location = player.location
-    //
-    //     val center = location.clone().add(0.0, ring.yOffset, 0.0)
-    //     // Generate a ring with "points" around the player
-    //     for (i in 0 until ring.points) {
-    //         val angle = 2.0 * Math.PI * i / ring.points
-    //         val x = ring.radius * cos(angle)
-    //         val z = ring.radius * sin(angle)
-    //         val particleLoc = center.clone().add(x, 0.0, z)
-    //
-    //         if (ring.extra != null) {
-    //             // Spawn with data - show only to the observer
-    //             observer.spawnParticle(ring.type, particleLoc, 1, ring.extra)
-    //         } else {
-    //             // Simple spawn for other particle types - show only to the observer
-    //             observer.spawnParticle(ring.type, particleLoc, 1, 0.0, 0.0, 0.0, 0.0)
-    //         }
-    //     }
-    // }
 }

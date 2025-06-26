@@ -28,7 +28,7 @@ explosion_pvp_disabled:
 indicator:
   available_styles: "%prefix% <white>Available indicator styles...</white>"
   style_entry: " <gray>- <white>%indicator%<red>%selected%</red></white></gray>"
-  not_found: "%error_prefix% <white>Indicator style '<red>%indicator%</red>' not found. Use <red>/pvp ring</red> to see available styles.</white>"
+  not_found: "%error_prefix% <white>Indicator style '<red>%indicator%</red>' not found. Use <red>/pvp indicator</red> to see available styles.</white>"
   no_permission: "%error_prefix% <red>You don't have permission to use the '%indicator%' indicator.</red>"
   set_success: "%prefix% <white>PvP indicator set to <red>%indicator%</red>.</white>"
   show: "%prefix% <white>PvP indicators now <red>shown<white> to you."
