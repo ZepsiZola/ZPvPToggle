@@ -33,7 +33,11 @@ class PvpManager(private val plugin: ZPvPToggle) {
             fun onPlayerJoin(event: org.bukkit.event.player.PlayerJoinEvent) {
                 val player = event.player
                 databaseManager.loadPlayerData(event.player)
-                if (getState(player).pvpEnabled) {
+                val state = getState(player)
+                if (!player.hasPermission("zpvptoggle.indicator."+state.indicatorRingId)) {
+                    state.indicatorRingId = "default"
+                }
+                if (state.pvpEnabled) {
                     pvpEnabledPlayers[player.uniqueId] = player
                 }
             }
