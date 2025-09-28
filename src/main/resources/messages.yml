@@ -4,10 +4,15 @@ error_prefix: "<bold><red>ERROR <dark_red>»</dark_red></bold>"
 pvp_enabled: "%prefix% <white>PvP enabled."
 pvp_disabled: "%prefix% <white>PvP disabled."
 
-pvp_cooldown: "%prefix% <white>Cannot toggle PvP for another <red>%cooldown%</red>.</white>"
-
 pvp_enabled_other: "%prefix% <white>PvP enabled for %player%."
 pvp_disabled_other: "%prefix% <white>PvP disabled for %player%."
+
+pvp_bypass_enabled: "%prefix% <white>PvP bypassing enabled."
+pvp_bypass_disabled: "%prefix% <white>PvP bypassing disabled."
+pvp_bypass_enabled_other: "%prefix% <white>PvP bypassing enabled for %player%."
+pvp_bypass_disabled_other: "%prefix% <white>PvP bypassing disabled for %player%."
+
+pvp_cooldown: "%prefix% <white>Cannot toggle PvP for another <red>%cooldown%</red>.</white>"
 
 pvp_disabled_on_death: "%prefix% <white>Your PvP has been disabled because you died."
 

@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit
 
 data class PlayerState(
     var pvpEnabled: Boolean = false,
+    var pvpBypass: Boolean = false,
     var canSeeIndicators: Boolean = true,  // Whether this player can see indicators of other players
     var canSeeOwnIndicator: Boolean = true,  // Whether this player can see their own indicator
     var firstToggleOnThisSession: Boolean = true,
@@ -56,18 +57,35 @@ class PvpManager(private val plugin: ZPvPToggle) {
         return playerStates.computeIfAbsent(player.uniqueId) { PlayerState() }
     }
 
-    fun togglePvp(player: Player): Boolean {
+    fun setBypass(player: Player, enabled: Boolean) {
         val state = getState(player)
-        setPvp(player, !state.pvpEnabled)
+        state.pvpBypass = enabled
+    }
+
+    fun toggleBypass(player: Player): Boolean {
+        val state = getState(player)
+        setBypass(player, !state.pvpBypass)
         // state.pvpEnabled = !state.pvpEnabled
         // updatePvpEnabledCache(player, state.pvpEnabled)
-        return state.pvpEnabled
+        return state.pvpBypass
+    }
+
+    fun isPvpBypass(player: Player): Boolean {
+        return getState(player).pvpBypass
     }
 
     fun setPvp(player: Player, enabled: Boolean) {
         val state = getState(player)
         state.pvpEnabled = enabled
         updatePvpEnabledCache(player, enabled)
+    }
+
+    fun togglePvp(player: Player): Boolean {
+        val state = getState(player)
+        setPvp(player, !state.pvpEnabled)
+        // state.pvpEnabled = !state.pvpEnabled
+        // updatePvpEnabledCache(player, state.pvpEnabled)
+        return state.pvpEnabled
     }
 
     fun isPvpEnabled(player: Player): Boolean {
