@@ -16,7 +16,7 @@ A lightweight Minecraft plugin that allows players to toggle their PvP status on
 - **Fully Customizable**: All messages and particle effects can be configured
 - **Folia Support**: Works with Folia server software
 - **Permissions-Based**: Granular permission system for different commands
-- **MariaDB and SQLite supported.**
+<!-- - **MariaDB and SQLite supported.** -->
 
 ## Commands
 
@@ -32,6 +32,7 @@ A lightweight Minecraft plugin that allows players to toggle their PvP status on
 | `/pvp help` | Display the help message | zpvptoggle.user |
 | `/pvp reload` | Reload plugin configuration | zpvptoggle.admin |
 | `/pvp <player>` | Toggle PvP for another player | zpvptoggle.admin |
+| `/pvp bypass <player>` | Toggle PvP Bypass status for you or another player | zpvptoggle.admin |
 
 ## Permissions
 
@@ -53,18 +54,6 @@ warning-message-enabled: true
 protect-pets: true
 # Duration of the cooldown for players toggling pvp or since their last pvp interaction
 pvp-cooldown: 10.0
-
-# Database configuration
-database:
-  # Whether to use MariaDB/MySQL instead of SQLite
-  use-mariadb: false
-  # MariaDB/MySQL connection settings (only used if use-mariadb is true)
-  mariadb:
-    host: localhost
-    port: 3306
-    database: minecraft
-    username: root
-    password: ""
 
 particle-indicator:
   # Interval in ticks to show the ring of particles. 20 ticks = 1 second.
