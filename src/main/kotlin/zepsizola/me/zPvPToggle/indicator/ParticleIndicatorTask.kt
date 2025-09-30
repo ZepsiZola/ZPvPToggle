@@ -69,15 +69,8 @@ object ParticleIndicatorTask {
                         val observerState = plugin.pvpManager.getState(observer)
                         // Skip if observer can't see indicators
                         if (!observerState.canSeeIndicators || (observer == pvpPlayer && !observerState.canSeeOwnIndicator)) continue
-                        // if (observer == pvpPlayer && !playerState.canSeeOwnIndicator) continue // Skip if observer is the player themselves
-                        
-                        // Schedule an immediate task for the observer to see the ring
-                        // var curr = 0
-                        // observer.scheduler.runAtFixedRate(plugin, Consumer { _: ScheduledTask ->
-                        //     if (curr >= 20) return@Consumer // Stop if count exceeds 20
-                        //     curr++
+
                         showParticleRing(pvpPlayer, observer, ring, plugin)
-                        // }, null, 1L, 1L)
                     }
                 })
             }
@@ -90,7 +83,7 @@ object ParticleIndicatorTask {
     }
 
 
-    fun showParticleRing(player: Player, observer: Player, ring: ParticleRingSettings, plugin: ZPvPToggle) {
+    private fun showParticleRing(player: Player, observer: Player, ring: ParticleRingSettings, plugin: ZPvPToggle) {
         var curr = 0
         val end = Math.round(indicatorCheckIntervalTicks.toDouble() / ring.interval.toInt()).toInt()
         observer.scheduler.runAtFixedRate(plugin, Consumer { _: ScheduledTask ->
@@ -114,7 +107,8 @@ object ParticleIndicatorTask {
                     ring.randomOffsetVert,
                     ring.randomOffsetHoriz,
                     ring.speed,
-                    ring.extra as? Any
+                    ring.extra
+                    // ring.extra as? Any
                 )
             }
         }, null, ring.interval, ring.interval)

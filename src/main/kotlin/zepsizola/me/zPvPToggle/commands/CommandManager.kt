@@ -1,6 +1,7 @@
 package zepsizola.me.zPvPToggle.commands
 
 import net.kyori.adventure.text.Component
+import org.bukkit.entity.Player
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -44,13 +45,17 @@ class CommandManager(private val plugin: ZPvPToggle) : CommandExecutor, TabCompl
     
     override fun onCommand(sender: CommandSender, cmd: Command, label: String, args: Array<out String>): Boolean {
         if (args.isEmpty()) {
-            // Default to toggle command if no args provided
+            // If executed from console with no args, show help
+            if (sender !is Player) {
+                val helpCommand = getCommand("help")
+                if (helpCommand != null) {
+                    return helpCommand.execute(plugin, sender, emptyArray())
+                }
+            }
+            // Default to toggle command if no args provided and sender is a player
             val toggleCommand = getCommand("toggle")
             if (toggleCommand != null && toggleCommand.canExecute(sender)) {
                 return toggleCommand.execute(plugin, sender, emptyArray())
-            } else {
-                sender.sendMessage(plugin.messageManager.getMessage("invalid_command"))
-                return true
             }
         }
         

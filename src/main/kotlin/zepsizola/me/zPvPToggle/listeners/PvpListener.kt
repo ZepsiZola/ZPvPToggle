@@ -24,6 +24,7 @@ import org.bukkit.block.data.type.Bed
 import org.bukkit.event.entity.PotionSplashEvent
 import org.bukkit.event.entity.LingeringPotionSplashEvent
 import org.bukkit.event.entity.AreaEffectCloudApplyEvent
+import org.bukkit.event.player.PlayerFishEvent
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.inventory.meta.PotionMeta
 import org.bukkit.potion.PotionEffect
@@ -128,7 +129,7 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
     }
 
     @EventHandler
-    fun onPlayerDamage(event: EntityDamageByEntityEvent) {
+    fun onEntityDamaged(event: EntityDamageByEntityEvent) {
         val victim = event.entity
         val attacker = event.damageSource.causingEntity ?: return
         if (isPvpValid(attacker, victim)) return
@@ -137,12 +138,22 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
     }
 
     @EventHandler
-    fun onPlayerPushed(event: EntityPushedByEntityAttackEvent) {
+    fun onEntityPushed(event: EntityPushedByEntityAttackEvent) {
         val victim = event.entity
         val attacker = event.pushedBy
         if (isPvpValid(attacker, victim)) return
         event.isCancelled = true
         // makeAndSendMessage(attacker, victim, "attack_pvp_disabled")
+    }
+
+    @EventHandler
+    fun onEntityFished(event: PlayerFishEvent) {
+        if (event.state != PlayerFishEvent.State.CAUGHT_ENTITY) return
+        val victim = event.caught ?: return
+        val attacker = event.player
+        if (isPvpValid(attacker, victim)) return
+        event.isCancelled = true
+        makeAndSendMessage(attacker, victim, "attack_pvp_disabled")
     }
 
     /*
@@ -188,7 +199,7 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
     }
 
     @EventHandler
-    fun onBedExplodesPlayer(event: EntityDamageByBlockEvent) {
+    fun onBedExplodesEntity(event: EntityDamageByBlockEvent) {
         if (event.cause != DamageCause.BLOCK_EXPLOSION) return
         if (event.damagerBlockState?.blockData !is org.bukkit.block.data.type.Bed) return
         val victim = event.entity
@@ -203,7 +214,7 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
     }
 
     @EventHandler
-    fun onRespawnAnchorExplodesPlayer(event: EntityDamageByBlockEvent) {
+    fun onRespawnAnchorExplodesEntity(event: EntityDamageByBlockEvent) {
         if (event.cause != DamageCause.BLOCK_EXPLOSION) return
         if (event.damagerBlockState?.blockData !is org.bukkit.block.data.type.RespawnAnchor) return
         val victim = event.entity

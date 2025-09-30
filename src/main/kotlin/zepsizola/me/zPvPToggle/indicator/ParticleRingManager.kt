@@ -89,11 +89,14 @@ class ParticleRingManager(private val plugin: ZPvPToggle) {
             randomOffsetVert = section.getDouble("random-offset-vertical", ParticleRingSettings.DEFAULT_RANDOM_OFFSET_VERT),
             randomOffsetHoriz = section.getDouble("random-offset-horizontal", ParticleRingSettings.DEFAULT_RANDOM_OFFSET_HORIZ),
             speed = section.getDouble("speed", 0.0),
-            extra = getExtra(particleType, section)
+            // extra = getExtra(particleType, section)
+            extra = section.getExtra(particleType)
         )
     }
 
-    fun getExtra(particleType: Particle, section: ConfigurationSection): Any? {
+    // private fun getExtra(particleType: Particle, section: ConfigurationSection): Any? {
+    private fun ConfigurationSection.getExtra(particleType: Particle): Any? {
+        val section = this
         return when (particleType) {
             Particle.DUST -> {
                 val color = colorFromString(section.getString("color", "RED") ?: "RED")
@@ -172,35 +175,6 @@ class ParticleRingManager(private val plugin: ZPvPToggle) {
         return rings.values
     }
     
-
-    // fun showParticleRing(player: Player, observer: Player, ring: ParticleRingSettings) {
-    //     var curr = 0
-    //     observer.scheduler.runAtFixedRate(plugin, Consumer { _: ScheduledTask ->
-    //         if (curr >= 20) return@Consumer // Stop if count exceeds 20
-    //         curr++
-    //         val location = player.location
-    //
-    //         val center = location.clone().add(0.0, ring.yOffset, 0.0)
-    //         // Generate a ring with "points" around the player
-    //         for (i in 0 until points) {
-    //             val angle = if (!ring.randomParticlePositions) 2.0 * Math.PI * i / ring.points else Random.nextDouble(0.0, 2 * Math.PI)
-    //             val x = ring.radius * cos(angle)
-    //             val z = ring.radius * sin(angle)
-    //             val particleLoc = center.clone().add(x, 0.0, z)
-    //
-    //             observer.spawnParticle(
-    //                 ring.type,
-    //                 particleLoc,
-    //                 1,
-    //                 ring.randomOffsetHoriz,
-    //                 ring.randomOffsetVert,
-    //                 ring.randomOffsetHoriz,
-    //                 ring.speed,
-    //                 ring.extra as? Any
-    //             )
-    //         }
-    //     }, null, ring.interval, ring.interval)
-    // }
 
     /**
      * Convert a color name from config to a Bukkit Color.
