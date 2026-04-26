@@ -6,6 +6,7 @@ import org.bukkit.entity.Tameable
 import org.bukkit.entity.LivingEntity
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.EventPriority
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.entity.EntityDamageByBlockEvent
@@ -128,7 +129,7 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
         if (message != null) attacker.sendMessage(message)
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     fun onEntityDamaged(event: EntityDamageByEntityEvent) {
         val victim = event.entity
         val attacker = event.damageSource.causingEntity ?: return
@@ -137,7 +138,7 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
         makeAndSendMessage(attacker, victim, "attack_pvp_disabled")
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     fun onEntityPushed(event: EntityPushedByEntityAttackEvent) {
         val victim = event.entity
         val attacker = event.pushedBy
@@ -146,7 +147,7 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
         // makeAndSendMessage(attacker, victim, "attack_pvp_disabled")
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     fun onEntityFished(event: PlayerFishEvent) {
         if (event.state != PlayerFishEvent.State.CAUGHT_ENTITY) return
         val victim = event.caught ?: return
@@ -161,7 +162,7 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
      *  initiates the bed explosion.
      * Then remove the entry from the lastBedInteraction map on the next tick.
      */
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     fun onPlayerInitiateBedExplosion(event: PlayerBedFailEnterEvent) {
         if (!event.willExplode) return
         val attacker = event.player
@@ -179,7 +180,7 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
      *  initiates the respawn anchor explosion.
      * Then remove the entry from the lastRespawnAnchorInteraction map on the next tick.
      */
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     fun onPlayerInitiateRespawnAnchorExplosion(event: PlayerInteractEvent) {
         val block = event.clickedBlock ?: return
         val respawnAnchor = block.blockData as? org.bukkit.block.data.type.RespawnAnchor ?: return
@@ -198,7 +199,7 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     fun onBedExplodesEntity(event: EntityDamageByBlockEvent) {
         if (event.cause != DamageCause.BLOCK_EXPLOSION) return
         if (event.damagerBlockState?.blockData !is org.bukkit.block.data.type.Bed) return
@@ -213,7 +214,7 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
         makeAndSendMessage((attacker as Entity), victim, "explosion_pvp_disabled")
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     fun onRespawnAnchorExplodesEntity(event: EntityDamageByBlockEvent) {
         if (event.cause != DamageCause.BLOCK_EXPLOSION) return
         if (event.damagerBlockState?.blockData !is org.bukkit.block.data.type.RespawnAnchor) return
@@ -228,7 +229,7 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
         makeAndSendMessage((attacker as Entity), victim, "explosion_pvp_disabled")
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     fun onPotionSplash(event: PotionSplashEvent) {
         val thrower = event.entity.shooter as? Player ?: return
         if (!isNegativePotion(event.potion.potionMeta)) return
@@ -241,7 +242,7 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
         }
     }
     
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     fun onLingeringPotionSplash(event: LingeringPotionSplashEvent) {
         val thrower = event.entity.shooter as? Player ?: return
         val potionMeta = event.entity.potionMeta
@@ -258,7 +259,7 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
         )
     }
     
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     fun onAreaEffectCloudApply(event: AreaEffectCloudApplyEvent) {
         val cloud = event.entity
         val throwerUUID = cloud.persistentDataContainer.get(
@@ -280,7 +281,7 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     fun onPlayerDeath(event: PlayerDeathEvent) {
         if (!plugin.disablePvpOnDeath) return
         val player = event.player
@@ -297,7 +298,7 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
     /**
      * Track TNT when it's primed by a player
      */
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     fun onTNTPrimed(event: ExplosionPrimeEvent) {
         val entity = event.entity
         if (entity !is TNTPrimed && entity !is ExplosiveMinecart) return
@@ -331,7 +332,7 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
     /**
      * Track TNT minecarts when placed by a player
      */
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     fun onTNTMinecartPlaced(event: org.bukkit.event.entity.EntityPlaceEvent) {
         val player = event.player ?: return
         val vehicle = event.entity
@@ -343,7 +344,7 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
     /**
      * Handle damage from TNT and TNT minecarts
      */
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     fun onExplosionDamage(event: EntityDamageByEntityEvent) {
         if (event.cause != DamageCause.ENTITY_EXPLOSION) return
         val victim = event.entity

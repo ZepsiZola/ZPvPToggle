@@ -40,10 +40,14 @@ object ParticleIndicatorTask {
         // Get the max view distance from config and ensure it's between 0 and 64.
         val maxDistance = plugin.config.getDouble("particle-indicator.max-view-distance", 32.0).coerceIn(0.0, 64.0)
         
+        // Common metadata keys used by vanish plugins
+        val vanishKeys = listOf("vanished", "isVanished", "vanish")
+
         // Schedule the global task to run at a fixed rate
         task = plugin.server.asyncScheduler.runAtFixedRate(plugin, Consumer { _: ScheduledTask ->
             // Get all players with PvP enabled from the PvpManager
             val pvpEnabledPlayers = plugin.pvpManager.getPvpEnabledPlayers()
+
             
             // For each player with PvP enabled
             playerLoop@ for (pvpPlayer in pvpEnabledPlayers) {
@@ -54,7 +58,6 @@ object ParticleIndicatorTask {
                 if (pvpPlayer.gameMode == org.bukkit.GameMode.SPECTATOR) continue
                 
                 // Check for vanish status using common metadata keys used by vanish plugins
-                val vanishKeys = listOf("vanished", "isVanished", "vanish")
                 for (key in vanishKeys) {
                     val isVanished = pvpPlayer.getMetadata(key).firstOrNull()?.asBoolean() ?: false
                     if (isVanished) continue@playerLoop // Skip if player is vanished
