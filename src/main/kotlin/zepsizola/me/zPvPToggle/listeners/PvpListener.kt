@@ -55,8 +55,8 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
 
     /**
      * Checks if PvP is valid for the given attacker and victim.
-     * @param attacker The player who is attacking.
-     * @param victim The player who is being attacked.
+     * @param attacker The entity who is attacking.
+     * @param victim The entity who is being attacked.
      * @return true if PvP is valid, false otherwise.
      */
     fun isPvpValid(attacker: Entity?, victim: Entity?): Boolean {
@@ -65,10 +65,13 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
             return true
         }
         if (attacker is Player && plugin.pvpManager.isPvpBypass(attacker)) return true
-        if (victim is Tameable && victim.isTamed() && !victim.ownerNearby()) return false
-        if (attacker is Tameable && attacker.isTamed() && !attacker.ownerNearby()) return false
-        val attackerPlayer = attacker.getPlayerOrPet() ?: return true
-        val victimPlayer = victim.getPlayerOrPet() ?: return true
+        if (plugin.protectPets && victim is Tameable && victim.isTamed() && !victim.ownerNearby()) return false
+        if (plugin.protectPets && attacker is Tameable && attacker.isTamed() && !attacker.ownerNearby()) return false
+        val attackerPlayer = attacker.getPlayerOrPet()
+        val victimPlayer = victim.getPlayerOrPet()
+        if (plugin.protectPets && attacker is Tameable && attacker.isTamed && attackerPlayer == null) return false
+        if (plugin.protectPets && victim is Tameable && victim.isTamed && victimPlayer == null) return false
+        if (attackerPlayer == null || victimPlayer == null) return true
         val valid = ((plugin.pvpManager.isPvpEnabled(attackerPlayer) && plugin.pvpManager.isPvpEnabled(victimPlayer)) || (victimPlayer == attackerPlayer))
         if (valid) {
             plugin.pvpManager.setCooldown(attackerPlayer)
@@ -91,6 +94,7 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
 
     private fun Entity.getPlayerOrPet(): Player? {
         if (this is Player) return this
+        if (this is Tameable && !this.isTamed()) return null
         if (!plugin.protectPets) return null
         return (this as? Tameable)?.owner as? Player ?: return null
     }
