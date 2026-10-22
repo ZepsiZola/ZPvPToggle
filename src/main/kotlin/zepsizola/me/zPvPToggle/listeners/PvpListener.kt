@@ -65,8 +65,8 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
             return true
         }
         if (attacker is Player && plugin.pvpManager.isPvpBypass(attacker)) return true
-        if (victim is Tameable && !victim.ownerNearby()) return false
-        if (attacker is Tameable && !attacker.ownerNearby()) return false
+        if (victim is Tameable && victim.isTamed() && !victim.ownerNearby()) return false
+        if (attacker is Tameable && attacker.isTamed() && !attacker.ownerNearby()) return false
         val attackerPlayer = attacker.getPlayerOrPet() ?: return true
         val victimPlayer = victim.getPlayerOrPet() ?: return true
         val valid = ((plugin.pvpManager.isPvpEnabled(attackerPlayer) && plugin.pvpManager.isPvpEnabled(victimPlayer)) || (victimPlayer == attackerPlayer))
