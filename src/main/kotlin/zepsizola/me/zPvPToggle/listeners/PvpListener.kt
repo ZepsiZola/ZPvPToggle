@@ -90,7 +90,6 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
     private fun Entity.getPlayerOrPet(): Player? {
         if (this is Player) return this
         if (this is Tameable && !this.isTamed()) return null
-        if (!plugin.protectPets) return null
         return (this as? Tameable)?.owner as? Player ?: return null
     }
 
