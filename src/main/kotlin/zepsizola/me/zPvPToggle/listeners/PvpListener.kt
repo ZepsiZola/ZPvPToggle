@@ -120,7 +120,7 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
         val message = when (victim) {
             is Tameable -> plugin.messageManager.getMessage(
                 "$yamlMessage.pet", 
-                mapOf("%player%" to (Bukkit.getOfflinePlayer(victim.ownerUniqueId!!).name ?: "unknown"))
+                mapOf("%player%" to (victim.ownerUniqueId?.let { Bukkit.getOfflinePlayer(it).name } ?: "unknown"))
             )
             is Player -> plugin.messageManager.getMessage(
                 "$yamlMessage.player", 
