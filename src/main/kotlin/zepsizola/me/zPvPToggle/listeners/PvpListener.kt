@@ -97,13 +97,14 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
     }
 
     /**
-     * Checks if a pet's owner is nearby
+     * Checks if a pet is pvp-valid based on it's tamed status, the pvp-status of it's owner, and if the owner is nearby or if the owner even exists.
      * @return true if the owner is nearby (of if pet has no owner), false otherwise.
      */
     private fun Tameable.ownerNearby(): Boolean {
-        if (!this.isTamed) return true
         if (!plugin.protectPets) return true
-        return this.location.getNearbyPlayers(32.0).contains(this.owner)
+        if (!this.isTamed) return true
+        val ownerUUID = this.ownerUniqueId ?: return true // So if the Tameable is tamed but has no Tamer
+        return this.location.getNearbyPlayers(32.0).any { it.uniqueId == ownerUUID }
     }
     /**
      * Checks if a potion meta has negative effects
