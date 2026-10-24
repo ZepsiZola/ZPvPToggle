@@ -61,9 +61,7 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
      */
     fun isPvpValid(attacker: Entity?, victim: Entity?): Boolean {
         // plugin.logger.info("Checking PvP validity for attacker: ${attacker.name}, victim: ${victim.name}")
-        if (attacker == null || victim == null) {
-            return true
-        }
+        if (attacker == null || victim == null) return true
         if (attacker is Player && plugin.pvpManager.isPvpBypass(attacker)) return true
         if (plugin.protectPets && victim is Tameable && victim.isTamed() && !victim.ownerNearby()) return false
         if (plugin.protectPets && attacker is Tameable && attacker.isTamed() && !attacker.ownerNearby()) return false
