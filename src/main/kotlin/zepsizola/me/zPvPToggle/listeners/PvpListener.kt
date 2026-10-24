@@ -63,8 +63,8 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
         // plugin.logger.info("Checking PvP validity for attacker: ${attacker.name}, victim: ${victim.name}")
         if (attacker == null || victim == null) return true
         if (attacker is Player && plugin.pvpManager.isPvpBypass(attacker)) return true
-        if (plugin.protectPets && victim is Tameable && victim.isTamed() && !victim.ownerNearby()) return false
-        if (plugin.protectPets && attacker is Tameable && attacker.isTamed() && !attacker.ownerNearby()) return false
+        if (victim is Tameable && !victim.isPvpValidForTameable()) return false
+        if (attacker is Tameable && !attacker.isPvpValidForTameable()) return false
         val attackerPlayer = attacker.getPlayerOrPet() ?: return true
         val victimPlayer = victim.getPlayerOrPet() ?: return true
         val valid = ((plugin.pvpManager.isPvpEnabled(attackerPlayer) && plugin.pvpManager.isPvpEnabled(victimPlayer)) || (victimPlayer == attackerPlayer))
@@ -95,10 +95,10 @@ class PvpListener(private val plugin: ZPvPToggle) : Listener {
     }
 
     /**
-     * Checks if a pet is pvp-valid based on it's tamed status, the pvp-status of it's owner, and if the owner is nearby or if the owner even exists.
-     * @return true if the owner is nearby (of if pet has no owner), false otherwise.
+     * Checks if a Tameable is pvp-valid based on it's tamed status, the pvp-status of it's owner, and if the owner is nearby or if the owner even exists.
+     * @return true if the Tameable can engage in PvP, false otherwise.
      */
-    private fun Tameable.ownerNearby(): Boolean {
+    private fun Tameable.isPvpValidForTameable(): Boolean {
         if (!plugin.protectPets) return true
         if (!this.isTamed) return true
         val ownerUUID = this.ownerUniqueId ?: return true // So if the Tameable is tamed but has no Tamer
